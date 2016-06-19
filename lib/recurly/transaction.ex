@@ -1,0 +1,119 @@
+defmodule Recurly.Transaction do
+  @moduledoc """
+  Module for handling transactions in Recurly.
+  See the [developer docs on transactions](https://dev.recurly.com/docs/list-transactions)
+  for more details
+  """
+  use Recurly.Resource
+  alias Recurly.Resource
+
+  @endpoint "/transactions"
+
+  schema :transaction do
+    field :transaction_code
+    field :uuid
+    field :action
+    field :amount_in_cents, :integer
+    field :tax_in_cents, :integer
+    field :currency
+    field :payment_method
+    field :reference
+    field :source
+    field :recurring_type, :boolean
+    field :test_type, :boolean
+    field :voidable_type, :boolean
+    field :refundable_type, :boolean
+    field :ip_address
+    field :details, Recurly.TransactionDetails, read_only: true
+  end
+
+  @doc """
+  Finds an transaction given a transaction uuid. Returns the transaction or an error.
+
+  ## Parameters
+
+  - `uuid` String transaction uuid
+
+  ## Examples
+
+  ```
+  alias Recurly.NotFoundError
+
+  case Recurly.Transaction.find("ialskdjaldkjsaldkjas") do
+    {:ok, transaction} ->
+      # Found the transaction
+    {:error, %NotFoundError{}} ->
+      # 404 transaction was not found
+  end
+  ```
+  """
+  def find(uuid) do
+    Resource.find(%Recurly.Transaction{}, path(uuid))
+  end
+
+  @doc """
+  Creates an transaction from a changeset. Supports nesting the `billing_info`
+
+  ## Parameters
+
+  - `changeset` Keyword list changeset
+
+  ## Examples
+
+  ```
+  alias Recurly.ValidationError
+
+  case Recurly.Transaction.create(transaction_code: "mytransactioncode") do
+    {:ok, transaction} ->
+      # created the transaction
+    {:error, %ValidationError{errors: errors}} ->
+      # will give you a list of validation errors
+  end
+  ```
+  """
+  def create(changeset) do
+    Resource.create(%Recurly.Transaction{}, changeset, @endpoint)
+  end
+
+  @doc """
+  Updates an transaction from a changeset
+
+  ## Parameters
+
+  - `transaction` transaction resource struct
+  - `changeset` Keyword list changeset representing the updates
+
+  ## Examples
+
+  ```
+  alias Recurly.ValidationError
+
+  changes = [
+    first_name: "Benjamin",
+    last_name: nil
+  ]
+
+  case Recurly.transaction.update(transaction, changes) do
+    {:ok, transaction} ->
+      # the updated transaction
+    {:error, %ValidationError{errors: errors}} ->
+      # will give you a list of validation errors
+  end
+  ```
+  """
+  def update(transaction = %Recurly.Transaction{}, changeset) do
+    Resource.update(transaction, changeset)
+  end
+
+  @doc """
+  Generates the path to an transaction given the transaction code
+
+  ## Parameters
+
+    - `transaction_code` String transaction code
+
+  """
+  def path(transaction_code) do
+    Path.join(@endpoint, transaction_code)
+  end
+end
