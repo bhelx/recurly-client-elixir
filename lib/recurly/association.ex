@@ -34,7 +34,6 @@ defmodule Recurly.Association do
   #=>   paginate: true,
   #=>   resource_type: Recurly.Transaction}
 
-
   account.billing_info
   #=> %Recurly.Association{
   #=>   href: "https://api.recurly.com/v2/accounts/myaccountcode/billing_info",
