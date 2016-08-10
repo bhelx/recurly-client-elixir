@@ -4,7 +4,11 @@
 unless you really know what you are doing. There are bugs and the API will likely change**
 
 Having said that, I would love help on making it production ready.
+
+## Documentation
+
 See [the documentation](https://hexdocs.pm/recurly/Recurly.html) to get started.
+This project uses inline documentation using [exdoc](https://github.com/elixir-lang/ex_doc).
 
 ## Design
 
