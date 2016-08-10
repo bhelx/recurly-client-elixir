@@ -11,6 +11,97 @@ defmodule Recurly do
   - `Recurly.Association` a struct for fetching associations to resources
   - `Recurly.Account` a good example of a resource with working examples
 
+  ## Resources
+
+  Resources are structs that represent a server object at a given point in time. Like
+  all elixir variables, they are immutable values. A resource consists of 3 parts:
+
+  - Fields
+  - Actions
+  - Associations
+
+  ```
+  subscription
+  # %Recurly.Subscription{
+  #   __meta__: %{
+  #     actions: %{
+  #       cancel: [:put, "https://api.recurly.com/v2/subscriptions/37e3a404f2c9b0edde8bbf4c7aa6a561/cancel"],
+  #       notes: [:put,"https://api.recurly.com/v2/subscriptions/37e3a404f2c9b0edde8bbf4c7aa6a561/notes"],
+  #       postpone: [:put,"https://api.recurly.com/v2/subscriptions/37e3a404f2c9b0edde8bbf4c7aa6a561/postpone"],
+  #       terminate: [:put,"https://api.recurly.com/v2/subscriptions/37e3a404f2c9b0edde8bbf4c7aa6a561/terminate"]
+  #     },
+  #     href: "https://api.recurly.com/v2/subscriptions/37e3a404f2c9b0edde8bbf4c7aa6a561"
+  #   },
+  #   account: %Recurly.Association{href: "https://api.recurly.com/v2/accounts/my_account_code",
+  #     paginate: false, resource_type: Recurly.Account},
+  #   currency: "USD",
+  #   plan: %Recurly.Plan{
+  #     __meta__: %{
+  #       href: "https://api.recurly.com/v2/plans/myplancode"
+  #     },
+  #     accounting_code: nil,
+  #     cancel_url: nil,
+  #     display_quantity: nil,
+  #     name: "A plan",
+  #     plan_code: "myplancode",
+  #     plan_interval_length: nil,
+  #     plan_interval_unit: nil,
+  #     revenue_schedule_type: nil,
+  #     setup_fee_accounting_code: nil,
+  #     setup_fee_in_cents: nil,
+  #     setup_fee_revenue_schedule_type: nil,
+  #     success_url: nil,
+  #     tax_code: nil,
+  #     tax_exempt: nil,
+  #     total_billing_cycles: nil,
+  #     trial_interval_length: nil,
+  #     trial_interval_unit: nil,
+  #     unit_amount_in_cents: nil,
+  #     unit_name: nil
+  #   },
+  #   plan_code: nil,
+  #   quantity: 1,
+  #   state: "active",
+  #   subscription_add_ons: [],
+  #   tax_in_cents: nil,
+  #   tax_rate: nil,
+  #   tax_region: nil,
+  #   tax_type: nil,
+  #   unit_amount_in_cents: 100,
+  #   uuid: "37e3a404f2c9b0edde8bbf4c7aa6a561"
+  # }
+  ```
+
+  The schema for each resource is defined in a module with the resource's name.
+  As an example: `Recurly.Account`.
+
+  Every resource has a reference to it's module and thus it's schema. But how schemas
+  work internally can largely be ignored by the programmer.
+
+  ```
+    Recurly.XML.Schema.get(Recurly.Account)
+    # %Recurly.XML.Schema{fields: [%Recurly.XML.Field{name: :accept_language,
+    #    opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :account_code, opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :address, opts: [], type: Recurly.Address},
+    #   %Recurly.XML.Field{name: :billing_info, opts: [], type: Recurly.BillingInfo},
+    #   %Recurly.XML.Field{name: :cc_emails, opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :company_name, opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :email, opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :entity_use_code, opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :first_name, opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :last_name, opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :state, opts: [read_only: true], type: :string},
+    #   %Recurly.XML.Field{name: :tax_exempt, opts: [], type: :boolean},
+    #   %Recurly.XML.Field{name: :transactions, opts: [paginate: true],
+    #    type: Recurly.Transaction},
+    #   %Recurly.XML.Field{name: :username, opts: [], type: :string},
+    #   %Recurly.XML.Field{name: :vat_number, opts: [], type: :string}],
+    #  resource_type: Recurly.Account}
+  ```
+
+
+
   ## Changesets
 
   At no point should you need to modify the resource structs in memory. In order to create
@@ -76,7 +167,13 @@ defmodule Recurly do
   #   plan: %Recurly.Plan{__meta__: %{href: "https://subdomain.recurly.com/v2/plans/myplancode"},
   #    name: "A plan", plan_code: "myplancode", setup_fee_in_cents: nil,
   #    unit_amount_in_cents: nil}, plan_code: nil, quantity: 1, state: "active",
-  #   subscription_add_ons: [], tax_in_cents: nil, tax_rate: nil, tax_region: nil,
+  #   subscription_add_ons: [%Recurly.SubscriptionAddOn{__meta__: %{href: nil},
+  #     add_on_code: "myaddon", quantity: 1,
+  #     unit_amount_in_cents: %Recurly.Money{AUD: nil, BRL: nil, CAD: nil, CHF: nil,
+  #     CZK: nil, DKK: nil, EUR: nil, GBP: nil, HUF: nil, ILS: nil, INR: nil,
+  #     MXN: nil, NOK: nil, NZD: nil, PLN: nil, SEK: nil, SGD: nil, USD: nil,
+  #     ZAR: nil, __meta__: %{href: nil}}}],
+  #   tax_in_cents: nil, tax_rate: nil, tax_region: nil,
   #   tax_type: nil, unit_amount_in_cents: 100,
   #   uuid: "37e068b0bc916763655db141b194e626"}}
   ```
@@ -113,10 +210,10 @@ defmodule Recurly do
   {:ok, subscription} = Recurly.Subscription.cancel(subscription)
   ```
 
-  Or we can use `Recurly.Resource.action/2` with an atom and call the action directly:
+  Or we can use `Recurly.Resource.perform_action/2` with an atom and call the action directly:
 
   ```
-  {:ok, subscription} = Recurly.Resource.action(subscription, :cancel)
+  {:ok, subscription} = Recurly.Resource.perform_action(subscription, :cancel)
   ```
 
   ## Associations

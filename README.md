@@ -12,7 +12,7 @@ This project uses inline documentation using [exdoc](https://github.com/elixir-l
 
 ## Design
 
-In writing this library from scratch, I'm trying to to test some "lessons learned" in maintaining the official
+In writing this library from scratch, I'm trying to test some "lessons learned" in maintaining the official
 Recurly clients over the past year or so. I tried to take ideas from what I found worked and did not work in each library.
 I've also taken some inspiration from other elixir projects [such as ecto](https://github.com/elixir-ecto/ecto).
 Here are some of the design principles I've tried to follow that I think will help avoid some of the problems
@@ -32,6 +32,7 @@ I've encountered with the other libraries:
 
   - Need a good "Getting Started" in the documentation
   - Implement all fields and resources. Some resources missing as well as some fields
+  - Needs work on parsing and building currency objects
   - I need to figure out how to handle pagination. There is not yet a way to fetch associations
     with paginate == true
   - Some large, nested functions need to be refactored. Some have nested ifs
@@ -56,4 +57,10 @@ I've encountered with the other libraries:
       [applications: [:recurly]]
     end
   ```
+
+## Testing
+
+```
+mix test
+```
 
