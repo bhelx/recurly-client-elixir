@@ -40,19 +40,19 @@ I've encountered with the other libraries:
 
 ## Installation
 
-  1. Add recurly to your list of dependencies in `mix.exs`:
+1. Add recurly to your list of dependencies in `mix.exs`:
 
-      ```elixir
-        def deps do
-          [{:recurly, "~> 0.0.1"}]
-        end
-      ```
+  ```elixir
+    def deps do
+      [{:recurly, "~> 0.0.1"}]
+    end
+  ```
 
-  2. Ensure recurly is started before your application:
+2. Ensure recurly is started before your application:
 
-      ```elixir
-        def application do
-          [applications: [:recurly]]
-        end
-      ```
+  ```elixir
+    def application do
+      [applications: [:recurly]]
+    end
+  ```
 
