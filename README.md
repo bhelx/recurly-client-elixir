@@ -28,6 +28,16 @@ I've encountered with the other libraries:
       sending to the server much more transparent. It also ensures that every resource you have is the exact represenation of
       what is on the server. This eliminates a whole class of annoying errors.
 
+## TODOs
+
+  - Implement all fields and resources. Some resources missing as well as some fields
+  - I need to figure out how to handle pagination. There is not yet a way to fetch associations
+    with paginate == true.
+  - Some large, nested functions need to be refactored. Some have nested ifs.
+  - Need more examples and documentation
+  - Typespecs
+  - More tests
+
 ## Installation
 
   1. Add recurly to your list of dependencies in `mix.exs`:

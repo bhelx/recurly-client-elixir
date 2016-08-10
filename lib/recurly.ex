@@ -2,22 +2,12 @@ defmodule Recurly do
   @moduledoc """
   ## Getting Started
 
-  *TODO* Need a good high level overview here. For now read each section on this page.
+  Read each section on this page.
   After reading these sections, these modules may be a good place to start digging.
 
   - `Recurly.Resource` module responsible for creating, updating, deleting resources
   - `Recurly.Association` a struct for fetching associations to resources
   - `Recurly.Account` a good example of a resource with working examples
-
-  ## TODOs
-
-  - Implement all fields and resources. Some resources missing as well as some fields
-  - I need to figure out how to handle pagination. There is not yet a way to fetch associations
-    with paginate == true.
-  - Some large, nested functions need to be refactored. Some have nested ifs.
-  - Need more examples and documentation
-  - Typespecs
-  - More tests
 
   ## Changesets
 
