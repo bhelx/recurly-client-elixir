@@ -2,7 +2,9 @@ defmodule Recurly do
   @moduledoc """
   ## Getting Started
 
-  Read each section on this page.
+  This documentation is a work in progress. Please consider contributing.
+
+  For now, Read each section on this page.
   After reading these sections, these modules may be a good place to start digging.
 
   - `Recurly.Resource` module responsible for creating, updating, deleting resources
