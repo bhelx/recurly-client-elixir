@@ -10,21 +10,21 @@ defmodule Recurly.Transaction do
   @endpoint "/transactions"
 
   schema :transaction do
-    field :transaction_code
-    field :uuid
     field :action
     field :amount_in_cents, :integer
-    field :tax_in_cents, :integer
     field :currency
-    field :payment_method
-    field :reference
-    field :source
-    field :recurring_type, :boolean
-    field :test_type, :boolean
-    field :voidable_type, :boolean
-    field :refundable_type, :boolean
-    field :ip_address
     field :details, Recurly.TransactionDetails, read_only: true
+    field :ip_address
+    field :payment_method
+    field :recurring_type, :boolean
+    field :reference
+    field :refundable_type, :boolean
+    field :source
+    field :tax_in_cents, :integer
+    field :test_type, :boolean
+    field :transaction_code
+    field :uuid
+    field :voidable_type, :boolean
   end
 
   @doc """
