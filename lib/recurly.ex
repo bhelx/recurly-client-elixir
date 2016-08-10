@@ -11,6 +11,7 @@ defmodule Recurly do
 
   ## TODOs
 
+  - Implement all fields and resources. Some resources missing as well as some fields
   - I need to figure out how to handle pagination. There is not yet a way to fetch associations
     with paginate == true.
   - Some large, nested functions need to be refactored. Some have nested ifs.

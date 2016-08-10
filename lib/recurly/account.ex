@@ -10,6 +10,7 @@ defmodule Recurly.Account do
   @endpoint "/accounts"
 
   schema :account do
+    field :accept_language
     field :account_code
     field :address, Recurly.Address
     field :billing_info, Recurly.BillingInfo
