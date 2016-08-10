@@ -30,10 +30,11 @@ I've encountered with the other libraries:
 
 ## TODOs
 
+  - Need a good "Getting Started" in the documentation
   - Implement all fields and resources. Some resources missing as well as some fields
   - I need to figure out how to handle pagination. There is not yet a way to fetch associations
-    with paginate == true.
-  - Some large, nested functions need to be refactored. Some have nested ifs.
+    with paginate == true
+  - Some large, nested functions need to be refactored. Some have nested ifs
   - Need more examples and documentation
   - Typespecs
   - More tests
