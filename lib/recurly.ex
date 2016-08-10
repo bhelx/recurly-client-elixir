@@ -96,6 +96,41 @@ defmodule Recurly do
   If any of the keys in your changeset data aren't recognized, you will get an `ArgumentError`.
   This will prevent you from misspelling or sending incorrect data.
 
+  ## Actions
+
+  Actions are modifying actions that can be performed on a resource outside of the normal CRUD.
+  Consider the subscription from above. It has a map of actions that can be performed:
+
+  ```
+  subscription
+  #  %Recurly.Subscription{__meta__: %{actions: %{cancel: [:put,
+  #        "https://subdomain.recurly.com/v2/subscriptions/37e068b0bc916763655db141b194e626/cancel"],
+  #       notes: [:put,
+  #        "https://subdomain.recurly.com/v2/subscriptions/37e068b0bc916763655db141b194e626/notes"],
+  #       postpone: [:put,
+  #        "https://subdomain.recurly.com/v2/subscriptions/37e068b0bc916763655db141b194e626/postpone"],
+  #       terminate: [:put,
+  #        "https://subdomain.recurly.com/v2/subscriptions/37e068b0bc916763655db141b194e626/terminate"]},
+  #     href: "https://subdomain.recurly.com/v2/subscriptions/37e068b0bc916763655db141b194e626"},
+  #     ......
+  ```
+
+  The `Recurly.Subscription` module allows us to perform these actions with helper functions:
+
+  ```
+  {:ok, subscription} = Recurly.Subscription.cancel(subscription)
+  ```
+
+  Or we can use `Recurly.Resource.action/2` with an atom and call the action directly:
+
+  ```
+  {:ok, subscription} = Recurly.Resource.action(subscription, :cancel)
+  ```
+
+  ## Associations
+
+  See `Recurly.Association` for documentation on how to use associations.
+
   ## Error Handling
 
   All network bound calls which may result in an error follow a similar API:
