@@ -16,6 +16,7 @@ defmodule Recurly.Account do
     field :cc_emails
     field :company_name, :string
     field :email
+    field :entity_use_code
     field :first_name
     field :last_name
     field :state, :string, read_only: true

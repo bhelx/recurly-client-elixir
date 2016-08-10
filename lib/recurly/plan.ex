@@ -10,10 +10,25 @@ defmodule Recurly.Plan do
   @endpoint "/plans"
 
   schema :plan do
+    field :accounting_code
+    field :cancel_url
+    field :display_quantity, :boolean
     field :name
     field :plan_code
-    field :unit_amount_in_cents, Recurly.Money
+    field :plan_interval_unit
+    field :plan_interval_length, :integer
+    field :revenue_schedule_type
+    field :setup_fee_accounting_code
     field :setup_fee_in_cents, Recurly.Money
+    field :setup_fee_revenue_schedule_type
+    field :success_url
+    field :total_billing_cycles
+    field :trial_interval_unit
+    field :trial_interval_length, :integer
+    field :unit_amount_in_cents, Recurly.Money
+    field :unit_name
+    field :tax_code
+    field :tax_exempt, :boolean
   end
 
   @doc """
