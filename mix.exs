@@ -9,6 +9,8 @@ defmodule Recurly.Mixfile do
      start_permanent: Mix.env == :prod,
      consolidate_protocols: Mix.env == :prod,
      docs: [main: "Recurly"],
+     description: description,
+     package: package,
      deps: deps]
   end
 
@@ -26,6 +28,22 @@ defmodule Recurly.Mixfile do
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.11", only: :dev},
       {:credo, "~> 0.4", only: [:dev, :test]}
+    ]
+  end
+
+  defp description do
+    """
+    An elixir client for the Recurly API https://dev.recurly.com/
+    """
+  end
+
+  defp package do
+    [
+      name: :recurly,
+      files: ["lib", "mix.exs", "README*", "LICENSE*"],
+      maintainers: ["Benjamin Eckel"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/bhelx/recurly-client-elixir"}
     ]
   end
 end
