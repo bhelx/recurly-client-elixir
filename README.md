@@ -1,4 +1,4 @@
-# Recurly [![Build Status](https://travis-ci.org/bhelx/recurly-client-elixir.svg?branch=master)](https://travis-ci.org/bhelx/recurly-client-elixir) [![Hex pm](https://img.shields.io/hexpm/v/recurly.svg?maxAge=2592000)](https://hex.pm/packages/recurly) [![API Docs](https://img.shields.io/badge/api-docs-blue.svg?style=flat)](https://hexdocs.pm/recurly/)
+# Recurly [![Build Status](https://travis-ci.org/bhelx/recurly-client-elixir.svg?branch=master)](https://travis-ci.org/bhelx/recurly-client-elixir) [![Hex pm](https://img.shields.io/hexpm/v/recurly.svg?maxAge=3600)](https://hex.pm/packages/recurly) [![API Docs](https://img.shields.io/badge/api-docs-blue.svg?style=flat)](https://hexdocs.pm/recurly/)
 
 **Warning, this is alpha software and is not supported by Recurly. It should not be used in production yet
 unless you really know what you are doing. There are bugs and the API will likely change**
