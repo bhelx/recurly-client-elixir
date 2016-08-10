@@ -1,4 +1,8 @@
 defmodule Recurly.Money do
+  @moduledoc """
+  A module representing an amount of money that may
+  be in different currencies. Sort of a naive implementation.
+  """
   use Recurly.Resource
 
   # TODO could maybe be smarter?

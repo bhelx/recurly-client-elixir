@@ -9,6 +9,15 @@ defmodule Recurly do
   - `Recurly.Association` a struct for fetching associations to resources
   - `Recurly.Account` a good example of a resource with working examples
 
+  ## TODOs
+
+  - I need to figure out how to handle pagination. There is not yet a way to fetch associations
+    with paginate == true.
+  - Some large, nested functions need to be refactored. Some have nested ifs.
+  - Need more examples and documentation
+  - Typespecs
+  - More tests
+
   ## Changesets
 
   At no point should you need to modify the resource structs in memory. In order to create
@@ -21,7 +30,7 @@ defmodule Recurly do
   {:ok, account} = Recurly.Account.create(account_code: "myaccountcode")
   # {:ok,
   #   %Recurly.Account{__meta__: %{actions: %{},
-  #           href: "https://your-subdomain.recurly.com/v2/accounts/myaccountcode"},
+  #           href: "https://subdomain.recurly.com/v2/accounts/myaccountcode"},
   #           account_code: "myaccountcode", billing_info: nil, cc_emails: nil,
   #             company_name: nil, email: nil, first_name: nil, last_name: nil,
   #               state: "active", tax_exempt: nil, username: nil, vat_number: nil}}
