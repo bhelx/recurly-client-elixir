@@ -22,6 +22,14 @@ defmodule Recurly.XML.Builder do
   #   <account_code>my_account</account_code>
   #   <first_name nil="nil"></first_name>
   # </account>
+
+  # if you give it a field it that is not in the
+  # resource's field, it will throw an ArgumentError
+  # let's assume you misspell account `acount`
+
+  changeset = [acount_code: "my_account", first_name: nil]
+  Recurly.XML.Builder.generate(changeset, Recurly.Account)
+  #=> raises ArgumentError "Invalid changeset data {:acount, "my_account"} for resource Recurly.Account"
   ```
   """
   def generate(changeset, resource_type) do
@@ -32,42 +40,85 @@ defmodule Recurly.XML.Builder do
     |> XmlBuilder.generate
   end
 
-  # TODO requires a refactoring
+  @doc """
+  Turns a changeset and associated resource type into a nested
+  tuple which can be turned into xml by `XmlBuilder`
+  """
   defp to_elements(changeset, resource_type) do
-    schema = Schema.get(resource_type)
-    writeable_fields = Schema.fields(schema, :writeable)
-
     changeset
-    |> Enum.map(fn {attr_name, attr_value} ->
-      field = Schema.find_field(schema, attr_name)
-
-      unless field do
-        raise ArgumentError, message: "Invalid changeset data #{inspect({attr_name, attr_value})} for resource #{inspect(resource_type)}"
-      end
-
-      if attr_value do
-        attr_type = field.type
-        if attr_type do
-          cond do
-            attr_type == :date_time ->
-              element(attr_name, %{"type" => "datetime"}, NaiveDateTime.to_iso8601(attr_value))
-            Types.primitive?(attr_type) -> # Simple primitive element
-              element(attr_name, nil, attr_value)
-            Field.array?(field) -> # check to see if array type
-              items = Enum.map(attr_value, fn v ->
-                name = elem(v, 0)
-                attrs = elem(v, 1)
-                element(name, nil, to_elements(attrs, attr_type))
-              end)
-              element(attr_name, %{"type" => "array"}, items)
-            true -> # Embedded type, must be unwrapped
-              element(attr_name, to_elements(attr_value, attr_type))
-          end
-        end
-      else
-        element(attr_name, %{"nil" => "nil"}, nil)
-      end
-    end)
+    |> Enum.map(&find_field(&1, resource_type))
+    |> Enum.map(&to_element/1)
     |> Enum.reject(&is_nil/1)
+  end
+
+  @doc """
+  Given an attribute tuple from a changeset and a resource type, find and
+  append the field from the schema
+
+  # Parameters
+
+  - `attr_tuple` {attr_name, attr_value} from the changset
+  - `resource_type` Module which is responsible for the changset data
+
+  # Examples
+
+  ```
+  alias Recurly.XML.Field
+
+  Recurly.XML.Builder.find_field({:account_code, "xyz"}, Recurly.Account)
+  #=> {:account_code, "xyz", %Field{name: :account_code, type: :string, opts: []}}
+  ```
+  """
+  def find_field({attr_name, attr_value}, resource_type) do
+    schema = Schema.get(resource_type)
+    field = Schema.find_field(schema, attr_name)
+
+    unless field do
+      msg = "Invalid changeset data #{inspect({attr_name, attr_value})} for resource #{inspect(resource_type)}"
+      raise ArgumentError, message: msg
+    end
+
+    {attr_name, attr_value, field}
+  end
+
+  @doc """
+  Takes a tuple from changeset data and returns an xml element
+
+  # Paramaters
+
+  - `changset_tuple` - contains the attribute name, the attribute value, and the `Recurly.XML.Field`.
+
+  # Example
+
+  ```
+  alias Recurly.XML.Field
+
+  field = %Field{name: :account_code, type: :string, opts: []}
+
+  Recurly.XML.Builder.to_element({:account_code, "xyz", field})
+  #=> {:account_code, nil, "xyz"}
+  ```
+  """
+  def to_element({attr_name, nil, _field}) do
+    element(attr_name, %{"nil" => "nil"}, nil)
+  end
+  def to_element({attr_name, attr_value, %Field{type: :date_time}}) do
+    attr_value = NaiveDateTime.to_iso8601(attr_value)
+    element(attr_name, %{"type" => "datetime"}, attr_value)
+  end
+  def to_element({attr_name, attr_value, field = %Field{opts: [array: true]}}) do
+    items = Enum.map(attr_value, fn v ->
+      child_name = elem(v, 0)
+      attributes = elem(v, 1)
+      element(child_name, nil, to_elements(attributes, field.type))
+    end)
+    element(attr_name, %{"type" => "array"}, items)
+  end
+  def to_element({attr_name, attr_value, field}) do
+    if Types.primitive?(field.type) do # Simple primitive element
+      element(attr_name, nil, attr_value)
+    else # Embedded type, must be unwrapped
+      element(attr_name, to_elements(attr_value, field.type))
+    end
   end
 end
