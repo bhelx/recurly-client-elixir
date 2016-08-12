@@ -1,4 +1,9 @@
 defmodule Recurly.Resource do
+  @moduledoc """
+  Module responsible for handling restful resources and actions.
+  Mostly for internal use. API unstable.
+  """
+
   alias Recurly.API
   alias Recurly.XML
 

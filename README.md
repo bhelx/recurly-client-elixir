@@ -61,6 +61,7 @@ I've encountered with the other libraries:
 ## Testing
 
 ```
-mix test
+mix credo # code analysis
+mix test  # run tests
 ```
 

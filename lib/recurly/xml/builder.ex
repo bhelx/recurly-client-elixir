@@ -1,4 +1,9 @@
 defmodule Recurly.XML.Builder do
+  @moduledoc """
+  Module responsible for building XML documents. Mostly
+  for internal use. API unstable.
+  """
+
   import XmlBuilder
   alias Recurly.XML.Types
   alias Recurly.XML.Schema
