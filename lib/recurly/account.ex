@@ -15,7 +15,9 @@ defmodule Recurly.Account do
     field :address, Recurly.Address
     field :billing_info, Recurly.BillingInfo
     field :cc_emails
+    field :closed_at, :date_time
     field :company_name, :string
+    field :created_at, :date_time
     field :email
     field :entity_use_code
     field :first_name
@@ -23,6 +25,7 @@ defmodule Recurly.Account do
     field :state, :string, read_only: true
     field :tax_exempt, :boolean
     field :transactions, Recurly.Transaction, paginate: true
+    field :updated_at, :date_time
     field :username
     field :vat_number
   end

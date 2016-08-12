@@ -114,6 +114,10 @@ defimpl Recurly.XML.Parser, for: Any do
               end)
 
             {attr_name, resources}
+          field.type == :date_time ->
+            path = %SweetXpath{path: './text()', cast_to: :string}
+            val = xpath(xml_node, path)
+            {attr_name, NaiveDateTime.from_iso8601!(val)}
           Types.primitive?(field.type) ->
             # Can be parsed and cast to a primitive type
             path = %SweetXpath{path: './text()', cast_to: field.type}

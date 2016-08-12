@@ -49,6 +49,8 @@ defmodule Recurly.XML.Builder do
         attr_type = field.type
         if attr_type do
           cond do
+            attr_type == :date_time ->
+              element(attr_name, %{"type" => "datetime"}, NaiveDateTime.to_iso8601(attr_value))
             Types.primitive?(attr_type) -> # Simple primitive element
               element(attr_name, nil, attr_value)
             Field.array?(field) -> # check to see if array type
