@@ -23,7 +23,7 @@ defmodule Recurly.XML.Builder do
   #   <first_name nil="nil"></first_name>
   # </account>
 
-  # if you give it a field it that is not in the
+  # if you give it a field that is not in the
   # resource's field, it will throw an ArgumentError
   # let's assume you misspell account `acount`
 
@@ -44,7 +44,7 @@ defmodule Recurly.XML.Builder do
   Turns a changeset and associated resource type into a nested
   tuple which can be turned into xml by `XmlBuilder`
   """
-  defp to_elements(changeset, resource_type) do
+  def to_elements(changeset, resource_type) do
     changeset
     |> Enum.map(&find_field(&1, resource_type))
     |> Enum.map(&to_element/1)
@@ -84,7 +84,7 @@ defmodule Recurly.XML.Builder do
   @doc """
   Takes a tuple from changeset data and returns an xml element
 
-  # Paramaters
+  # Parameters
 
   - `changset_tuple` - contains the attribute name, the attribute value, and the `Recurly.XML.Field`.
 
