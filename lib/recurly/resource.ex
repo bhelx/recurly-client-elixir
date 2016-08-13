@@ -16,20 +16,23 @@ defmodule Recurly.Resource do
   end
 
   @doc """
-  Returns a list of resources at the given endpoint
+  Returns a list of resources at the given endpoint. You will probably not
+  want to use this directly and instead use `Recurly.Resource.stream/3`.
 
   ## Parameters
 
     - `resource` Recurly.Resource struct to parse result into
     - `path` String path to the resource
-    - `options` Keyword list of GET params
+    - `options` the request options. See options in the
+        [pagination section](https://dev.recurly.com/docs/pagination)
+        of the docs for possible values.
 
   ## Examples
 
   ```
   case Recurly.Resource.list(%Recurly.Account{}, "/accounts", state: "subscriber") do
-    {:ok, accounts} ->
-      # list of accounts
+    {:ok, page} ->
+      # a recurly page
     {:error, error} ->
       # There was an error
   end
@@ -37,8 +40,112 @@ defmodule Recurly.Resource do
   """
   def list(resource, path, options) do
     case API.make_request(:get, path, "", params: options) do
-      {:ok, xml_string} ->
-        {:ok, XML.Parser.parse(resource, xml_string, true)}
+      {:ok, xml_string, headers} ->
+        resources = Recurly.XML.Parser.parse(resource, xml_string, true)
+        page = Recurly.Page.from_response(resource, resources, headers)
+        {:ok, page}
+      err ->
+        err
+    end
+  end
+
+  @doc """
+  Creates a stream from a `Recurly.Association`. See `Recurly.Resource.stream/3`.
+  """
+  def stream(association = %Recurly.Association{paginate: true}, options \\ []) do
+    resource_type = association.resource_type
+    endpoint = association.href
+
+    Recurly.Page.new(resource_type, endpoint, options)
+    |> Recurly.Page.to_stream
+  end
+
+  @doc """
+  Creates a stream of resources given a type,
+  an endpoint, and request options.
+
+  A resource stream behaves the way any elixir `Stream` would behave.
+  Streams are composable and lazy. We'll try to create some trivial examples
+  here but what you can accomplish with streams is pretty limitless.
+
+  TODO - need more examples, need error handling
+
+  ## Parameters
+
+  - `resource_type` the resource type to parse
+  - `endpoint` the list path for this stream of pages
+  - `options` the request options. See options in the
+      [pagination section](https://dev.recurly.com/docs/pagination)
+      of the docs.
+
+  ## Examples
+
+  You should use the shortcut on the module of the resource you are streaming such as
+  `Recurly.Subscription.stream/1` to create the stream. This function is mostly
+  for internal use, but these examples will show Resource's stream function.
+
+  ```
+  alias Recurly.Resource
+  alias Recurly.Subscription
+
+  # Suppose we want the uuids of the first 70 active subscription in order of creation (newest to oldest)
+  options = [state: :active, order: :desc, sort: :created_at]
+
+  stream = Resource.stream(Subscription, "/subscriptions", options)
+  # stream = Subscription.stream(options) # use this shortcut instead
+
+  uuids =
+    stream
+    |> Stream.map(&(Map.get(&1, :uuid)))
+    |> Enum.take(70)
+
+  # uuids => ["376e7209ee28de6b611f7b49df847539", "376e71e42b254873f550a749789dbaaa", ...] # 68 more
+
+  # Since the default page size is 50, we had to fetch 2 pages.
+  # This, however, was abstracted away from you.
+  ```
+  """
+  def stream(resource_type, endpoint, options) do
+    resource_type
+    |> Recurly.Page.new(endpoint, options)
+    |> Recurly.Page.to_stream
+  end
+
+  @doc """
+  Gives the count of records returned given a path and options
+
+  # Parameters
+
+  - `path` the url path
+  - `options` the request options. See options in the
+      [pagination section](https://dev.recurly.com/docs/pagination)
+      of the docs.
+
+  # Examples
+
+  ```
+  # suppose we want to count all subscriptions
+  case Recurly.Resource.count("/subscriptions", []) do
+    {:ok, count} ->
+      # count => 176 (or some integer)
+    {:err, err} ->
+      # error occurred
+  end
+
+  # or maybe we wan to count just active subscriptions
+  case Recurly.Resource.count("/subscriptions", state: :active) do
+    {:ok, count} ->
+      # count => 83 (or some integer)
+    {:err, err} ->
+      # error occurred
+  end
+  ```
+  """
+  def count(path, options) do
+    case API.make_request(:head, path, "", params: options) do
+      {:ok, _xml_string, headers} ->
+        {num_records, _} = Integer.parse(headers["X-Records"])
+        {:ok, num_records}
       err ->
         err
     end
@@ -71,13 +178,57 @@ defmodule Recurly.Resource do
   """
   def find(resource, path) do
     case API.make_request(:get, path) do
-      {:ok, xml_string} ->
+      {:ok, xml_string, _headers} ->
         {:ok, XML.Parser.parse(resource, xml_string, false)}
       err ->
         err
     end
   end
 
+  @doc """
+  Gives the first resource returned given a path and options
+
+  # Parameters
+
+  - `resource` resource to parse into
+  - `path` the url path
+  - `options` the request options. See options in the
+      [pagination section](https://dev.recurly.com/docs/pagination)
+      of the docs.
+
+  # Examples
+
+  ```
+  alias Recurly.Resource
+  alias Recurly.Subscription
+
+  # suppose we want the latest, active subscription
+  case Resource.first(%Subscription{}, "/subscriptions", state: :active) do
+    {:ok, subscription} ->
+      # subscription => the newest active subscription
+    {:err, err} ->
+      # error occurred
+  end
+
+  # or maybe want the oldest, active subscription
+  case Resource.first(%Subscription{}, "/subscriptions", state: :active, order: :asc) do
+    {:ok, subscription} ->
+      # subscription => the oldest active subscription
+    {:err, err} ->
+      # error occurred
+  end
+  ```
+  """
+  def first(resource, path, options) do
+    options = Keyword.merge(options, per_page: 1)
+    case Recurly.Resource.list(resource, path, options) do
+      {:ok, page} ->
+        first_resource = page |> Map.get(:resources) |> List.first
+        {:ok, first_resource}
+      err ->
+        err
+    end
+  end
 
   @doc """
   Finds and parses a resource given an association
@@ -142,7 +293,7 @@ defmodule Recurly.Resource do
     xml_body = XML.Builder.generate(changeset, resource_type)
 
     case API.make_request(:post, path, xml_body) do
-      {:ok, xml_string} ->
+      {:ok, xml_string, _headers} ->
         {:ok, XML.Parser.parse(resource, xml_string, false)}
       err ->
         err
@@ -168,7 +319,7 @@ defmodule Recurly.Resource do
       |> XML.Builder.generate(type)
 
     case API.make_request(:put, path, xml_body) do
-      {:ok, xml_string} ->
+      {:ok, xml_string, _headers} ->
         {:ok, XML.Parser.parse(resource, xml_string, false)}
       err ->
         err
@@ -256,31 +407,10 @@ defmodule Recurly.Resource do
     resource_action = action(resource, action_name)
 
     case apply(&API.make_request/2, resource_action) do
-      {:ok, xml_string} ->
+      {:ok, xml_string, _headers} ->
         {:ok, XML.Parser.parse(resource, xml_string, false)}
       err ->
         err
     end
   end
-
-  # @doc false
-  # def from_changeset(changeset, resource_type) do
-  #   schema = XML.Schema.fields(resource_type)
-
-  #   changeset =
-  #     changeset
-  #     |> Enum.map(fn {attr_name, attr_value} ->
-  #       type = Keyword.get(schema, attr_name)
-  #       if type && attr_value do
-  #         if XML.Types.primitive?(type) do
-  #           {attr_name, attr_value}
-  #         else
-  #           {attr_name, from_changeset(attr_value, type)}
-  #         end
-  #       end
-  #     end)
-  #     |> Enum.reject(&is_nil/1)
-
-  #   struct(resource_type, changeset)
-  # end
 end

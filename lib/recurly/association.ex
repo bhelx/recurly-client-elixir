@@ -14,13 +14,14 @@ defmodule Recurly.Association do
   ```
 
   If you want to know how to fetch associations,
-  see `Recurly.Resource.find/1` and (todo) `Recurly.Resource.list/1`.
+  see `Recurly.Resource.find/1` for paginate == false
+  and `Recurly.Resource.stream/2` for paginate == true.
 
   ## Struct Fields
 
   - `href` the href to the association
   - `resource_type` the resource type (module) responsible for the link
-  - `paginate` will be true if you're expected to paginate through the resource (link `transactions`).
+  - `paginate` will be true when you need to paginate through the resources (link `transactions`).
       It will be false if the association is a singleton (like `billing_info`)
 
   ## Example

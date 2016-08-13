@@ -33,9 +33,8 @@ I've encountered with the other libraries:
   - Need a good "Getting Started" in the documentation
   - Implement all fields and resources. Some resources missing as well as some fields
   - Needs work on parsing and building currency objects
-  - I need to figure out how to handle pagination. There is not yet a way to fetch associations
-    with paginate == true
-  - Some large, nested functions need to be refactored. Some have nested ifs
+  - Resource Streaming needs some work and testing
+  - A few large, nested functions need to be refactored. Some have nested ifs
   - Need more examples and documentation
   - Typespecs
   - More tests
@@ -46,7 +45,7 @@ I've encountered with the other libraries:
 
   ```elixir
     def deps do
-      [{:recurly, "~> 0.0.1"}]
+      [{:recurly, "~> 0.1.0"}]
     end
   ```
 

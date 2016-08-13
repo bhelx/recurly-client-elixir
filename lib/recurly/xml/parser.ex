@@ -101,15 +101,20 @@ defimpl Recurly.XML.Parser, for: Any do
   defp to_attribute({attr_name, _xml_node, _field, %{"nil" => "nil"}}) do
     {attr_name, nil}
   end
-  defp to_attribute({attr_name, _xml_node, field, %{"href" => href, "childless" => true}}) when href do
-    {
-      attr_name,
-      %Recurly.Association{
-        href: href,
-        resource_type: field.type,
-        paginate: Field.pageable?(field)
+  defp to_attribute({attr_name, _xml_node, field, xml_attrs = %{"childless" => true}}) do
+    href = xml_attrs["href"]
+    if href && String.length(href) > 0 do
+      {
+        attr_name,
+        %Recurly.Association{
+          href: href,
+          resource_type: field.type,
+          paginate: Field.pageable?(field)
+        }
       }
-    }
+    else
+      # should probably raise an error
+    end
   end
   defp to_attribute({attr_name, xml_node, field, %{"type" => "array"}}) do
     path = %SweetXpath{path: './*', is_list: true}
@@ -127,6 +132,14 @@ defimpl Recurly.XML.Parser, for: Any do
     val = text_value(xml_node)
     {attr_name, NaiveDateTime.from_iso8601!(val)}
   end
+  defp to_attribute({attr_name, xml_node, %Field{type: :boolean}, _xml_attrs}) do
+    val = text_value(xml_node) |> String.downcase
+    case val do
+      "true" -> {attr_name, true}
+      "false" -> {attr_name, false}
+      _ -> raise ArgumentError, message: "Invalid boolean value #{inspect({attr_name, val})}"
+    end
+  end
   defp to_attribute({attr_name, xml_node, field, xml_attrs}) do
     if Types.primitive?(field.type) do # Can be parsed and cast to a primitive type
       path = %SweetXpath{path: './text()', cast_to: field.type}
@@ -139,6 +152,7 @@ defimpl Recurly.XML.Parser, for: Any do
         {attr_name, value}
       end
     else # Is embedded and must parse out the children attributes
+    #IO.inspect({attr_name, xml_node, field, xml_attrs})
       {attr_name, to_struct(xml_node, field.type, "./")}
     end
   end

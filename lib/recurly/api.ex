@@ -24,12 +24,30 @@ defmodule Recurly.API do
     APILogger.log_request(method, endpoint, body, headers, options)
 
     HTTPoison.request(method, endpoint, body, headers, options)
+    |> decompress
     |> APILogger.log_response
     |> handle_response
   end
 
-  defp handle_response({:ok, %Response{status_code: code, body: xml_string}}) when code >= 200 and code < 400 do
-    {:ok, xml_string}
+  defp decompress({:ok, response = %Response{}}) do
+    gzipped = Enum.any?(response.headers, fn (kv) ->
+      case kv do
+        {"Content-Encoding", "gzip"} -> true
+        _ -> false
+      end
+    end)
+
+    if gzipped and String.length(response.body) > 0 do
+      {:ok, Map.put(response, :body, :zlib.gunzip(response.body))}
+    else
+      {:ok, response}
+    end
+  end
+  defp decompress(response), do: response
+
+  defp handle_response({:ok, %Response{status_code: code, body: xml_string, headers: headers}}) when code >= 200 and code < 400 do
+    headers = Enum.into(headers, %{})
+    {:ok, xml_string, headers}
   end
   defp handle_response({:ok, %Response{status_code: 422, body: xml_string}}) do
     error =
@@ -61,7 +79,13 @@ defmodule Recurly.API do
     * `extras` keyword list of extra opts to merge into defaults
   """
   def req_options(extras) do
-    Keyword.merge([hackney: [basic_auth: {api_key, ""}]], extras)
+    defaults = [
+      recv_timeout: 15_000,
+      timeout: 15_000,
+      hackney: [basic_auth: {api_key, ""}]
+    ]
+
+    Keyword.merge(defaults, extras)
   end
 
   @doc """
@@ -76,7 +100,6 @@ defmodule Recurly.API do
       %{scheme: "https"} -> path
       %{scheme: "http"} -> path
        _ -> Path.join("https://#{api_subdomain}.recurly.com/v2", path)
-      #_ -> Path.join("http://benjamin.lvh.me:3000/v2", path)
     end
   end
 
@@ -88,10 +111,11 @@ defmodule Recurly.API do
   """
   def req_headers(extras) do
     %{}
-    |> Map.put("User-Agent",    Recurly.user_agent)
-    |> Map.put("X-Api-Version", Recurly.api_version)
-    |> Map.put("Content-Type",  "application/xml; charset=utf-8")
-    |> Map.put("Accept",        "application/xml")
+    |> Map.put("User-Agent",       Recurly.user_agent)
+    |> Map.put("X-Api-Version",    Recurly.api_version)
+    |> Map.put("Content-Type",     "application/xml; charset=utf-8")
+    |> Map.put("Accept",           "application/xml")
+    |> Map.put("Accept-Encoding",  "gzip,deflate")
     |> Map.merge(extras)
   end
 

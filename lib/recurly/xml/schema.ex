@@ -136,12 +136,4 @@ defmodule Recurly.XML.Schema do
     |> Map.get(:fields)
     |> Enum.find(fn field -> field.name == name end)
   end
-
-  def is_array(resource_type, field_name) do
-    resource_type.__schema__
-    |> Enum.any?(fn kwl ->
-      opts = Keyword.get(kwl, :opts)
-      field_name == Keyword.get(kwl, :name) && Keyword.get(opts, :array)
-    end)
-  end
 end

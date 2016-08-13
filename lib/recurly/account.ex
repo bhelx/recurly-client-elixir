@@ -31,25 +31,93 @@ defmodule Recurly.Account do
   end
 
   @doc """
-  Lists all the accounts. See [the accounts dev docs](https://dev.recurly.com/docs/list-accounts) for more details.
+  Creates a stream of accounts given some options.
 
   ## Parameters
 
-  - `options` Keyword list of GET params
+  - `options` Keyword list of the request options. See options in the
+      [account list section](https://dev.recurly.com/docs/list-accounts)
+      of the docs.
 
   ## Examples
 
+  See `Recurly.Resource.stream/3` for more detailed examples of
+  working with resource streams.
+
   ```
-  case Recurly.Account.list(state: "subscriber") do
-    {:ok, accounts} ->
-      # list of subscriber accounts
-    {:error, error} ->
-      # error happened
+  # stream of past due accounts sorted from most recently
+  # updated to least recently updated
+  stream = Recurly.Account.stream(state: :past_due, sort: :updated_at)
+  ```
+  """
+  def stream(options \\ []) do
+    Recurly.Resource.stream(Recurly.Account, @endpoint, options)
+  end
+
+  @doc """
+  Gives the count of accounts on the server given options
+
+  # Parameters
+
+  - `options` Keyword list of the request options. See options in the
+      [account list section](https://dev.recurly.com/docs/list-accounts)
+      of the docs.
+
+  # Examples
+
+  ```
+  # suppose we want to count all accounts
+  case Recurly.Account.count() do
+    {:ok, count} ->
+      # count => 176 (or some integer)
+    {:err, err} ->
+      # error occurred
+  end
+
+  # or maybe we wan to count just past due accounts
+  case Recurly.Account.count(state: :past_due) do
+    {:ok, count} ->
+      # count => 83 (or some integer)
+    {:err, err} ->
+      # error occurred
   end
   ```
   """
-  def list(options \\ []) do
-    Resource.list(%Recurly.Account{}, @endpoint, options)
+  def count(options \\ []) do
+    Recurly.Resource.count(@endpoint, options)
+  end
+
+  @doc """
+  Gives the first account returned given options
+
+  # Parameters
+
+  - `options` Keyword list of the request options. See options in the
+      [account list section](https://dev.recurly.com/docs/list-accounts)
+      of the docs.
+
+  # Examples
+
+  ```
+  # suppose we want the latest, active account
+  case Recurly.Account.first(state: :active) do
+    {:ok, account} ->
+      # account => the newest active account
+    {:err, err} ->
+      # error occurred
+  end
+
+  # or maybe want the oldest, active account
+  case Recurly.Account.first(state: :active, order: :asc) do
+    {:ok, account} ->
+      # account => the oldest active account
+    {:err, err} ->
+      # error occurred
+  end
+  ```
+  """
+  def first(options \\ []) do
+    Recurly.Resource.first(%Recurly.Account{}, @endpoint, options)
   end
 
   @doc """

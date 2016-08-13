@@ -220,6 +220,13 @@ defmodule Recurly do
 
   See `Recurly.Association` for documentation on how to use associations.
 
+  ## Resource Streams
+
+  Instead of dealing with pagination, you can fetch resources as a stream
+  (following elixir's `Stream` protocol).
+
+  See `Recurly.Resource.stream/3` for documentation on how to use streams.
+
   ## Error Handling
 
   All network bound calls which may result in an error follow a similar API:
@@ -303,6 +310,15 @@ defmodule Recurly do
   ```
   """
 
+  @doc false
   def api_version, do: "2.4"
-  def user_agent, do: "Recurly/Elixir/0.0.1"
+
+  @doc false
+  def client_version do
+    {:ok, vsn} = :application.get_key(:recurly, :vsn)
+    List.to_string(vsn)
+  end
+
+  @doc false
+  def user_agent, do: "Recurly/Elixir/#{client_version}"
 end

@@ -11,8 +11,8 @@ defmodule Recurly.APILogger do
   @doc """
   Logs the request.
   """
-  def log_request(method, endpoint, body, options, headers) do
-    Logger.info """
+  def log_request(method, endpoint, body, headers, options) do
+    Logger.debug """
       method: #{method},
       endpoint: #{endpoint},
       body: #{body},
@@ -25,7 +25,7 @@ defmodule Recurly.APILogger do
   Logs the response.
   """
   def log_response({:ok, response = %Response{}}) do
-    Logger.info """
+    Logger.debug """
       status_code: #{response.status_code}
       body: #{response.body}
     """
