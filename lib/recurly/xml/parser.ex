@@ -1,6 +1,7 @@
 defprotocol Recurly.XML.Parser do
   @moduledoc """
   Protocol responsible for parsing xml into resources
+  TODO - This still has some refactoring that can be done.
   """
 
   @doc """
@@ -74,10 +75,9 @@ defimpl Recurly.XML.Parser, for: Any do
     %{resource_struct | __meta__: Map.put(meta, :actions, actions)}
   end
 
-  # TODO - this must be refactored
   defp to_struct(xml_node, type, string_path) do
     schema = Schema.get(type)
-    href_attr = attribute(xml_node, string_path, "href")
+    href_attr = parse_xml_attribute(xml_node, string_path, "href")
     path = %SweetXpath{path: to_char_list(string_path <> "*"), is_list: true}
 
     xml_node
@@ -85,68 +85,91 @@ defimpl Recurly.XML.Parser, for: Any do
     |> Enum.map(fn xml_node ->
       attr_name = xml_node |> xpath(~x"name(.)"s) |> String.to_atom
       field = Schema.find_field(schema, attr_name)
-      type_attr = attribute(xml_node, "./", "type")
-      node_href_attr = attribute(xml_node, "./", "href")
-      nill_attr = attribute(xml_node, "./", "nil")
-      childless = xpath(xml_node, ~x"./*") == nil
-
-      if field do
-        cond do
-          nill_attr == "nil" ->
-            {attr_name, nil}
-          childless and node_href_attr != nil ->
-            {
-              attr_name,
-              %Recurly.Association{
-                href: node_href_attr,
-                resource_type: field.type,
-                paginate: Field.pageable?(field)
-              }
-            }
-          type_attr == "array" ->
-            path = %SweetXpath{path: './*', is_list: true}
-
-            resources =
-              xml_node
-              |> xpath(path)
-              |> Enum.map(fn element_xml_node ->
-                to_struct(element_xml_node, field.type, "./")
-              end)
-
-            {attr_name, resources}
-          field.type == :date_time ->
-            path = %SweetXpath{path: './text()', cast_to: :string}
-            val = xpath(xml_node, path)
-            {attr_name, NaiveDateTime.from_iso8601!(val)}
-          Types.primitive?(field.type) ->
-            # Can be parsed and cast to a primitive type
-            path = %SweetXpath{path: './text()', cast_to: field.type}
-            val = xpath(xml_node, path)
-
-            # TODO a better way to detect nil
-            if val == "" do
-              nil
-            else
-              {attr_name, val}
-            end
-          true ->
-            # Is embedded and must parse out the children attributes
-            {attr_name, to_struct(xml_node, field.type, "./")}
-        end
-      end
+      xml_attributes = parse_xml_attributes(xml_node)
+      {attr_name, xml_node, field, xml_attributes}
     end)
+    |> Enum.map(&to_attribute/1)
     |> Enum.reject(&is_nil/1)
     |> Enum.concat([{:__meta__, %{href: href_attr}}])
     |> from_map(type)
+  end
+
+  # Turns the xml node tuple into a resource attribute tuple
+  defp to_attribute({_attr_name, _xml_node, nil, _xml_attrs}) do
+    nil
+  end
+  defp to_attribute({attr_name, _xml_node, _field, %{"nil" => "nil"}}) do
+    {attr_name, nil}
+  end
+  defp to_attribute({attr_name, _xml_node, field, %{"href" => href, "childless" => true}}) when href do
+    {
+      attr_name,
+      %Recurly.Association{
+        href: href,
+        resource_type: field.type,
+        paginate: Field.pageable?(field)
+      }
+    }
+  end
+  defp to_attribute({attr_name, xml_node, field, %{"type" => "array"}}) do
+    path = %SweetXpath{path: './*', is_list: true}
+
+    resources =
+      xml_node
+      |> xpath(path)
+      |> Enum.map(fn element_xml_node ->
+        to_struct(element_xml_node, field.type, "./")
+      end)
+
+    {attr_name, resources}
+  end
+  defp to_attribute({attr_name, xml_node, %Field{type: :date_time}, _xml_attrs}) do
+    val = text_value(xml_node)
+    {attr_name, NaiveDateTime.from_iso8601!(val)}
+  end
+  defp to_attribute({attr_name, xml_node, field, xml_attrs}) do
+    if Types.primitive?(field.type) do # Can be parsed and cast to a primitive type
+      path = %SweetXpath{path: './text()', cast_to: field.type}
+      value = xpath(xml_node, path)
+
+      # TODO a better way to detect nil
+      if value == "" do
+        nil
+      else
+        {attr_name, value}
+      end
+    else # Is embedded and must parse out the children attributes
+      {attr_name, to_struct(xml_node, field.type, "./")}
+    end
   end
 
   defp from_map(enum, type) do
     struct(type, enum)
   end
 
-  defp attribute(xml_node, path, attribute) do
-    path = %SweetXpath{path: to_char_list("#{path}@#{attribute}"), cast_to: :string}
+  # gives you a map of xml attributes and values for a node
+  # will also have childless => true if node has no children
+  defp parse_xml_attributes(xml_node) do
+    attrs =
+      ~w(href type nil)
+      |> Enum.map(fn key ->
+        {key, parse_xml_attribute(xml_node, "./", key)}
+      end)
+      |> Enum.into(%{})
+
+    Map.put(attrs, "childless", xpath(xml_node, ~x"./*") == nil)
+  end
+
+  # parses a single xml attribute given a key
+  defp parse_xml_attribute(xml_node, path, attribute_key) do
+    text_value(xml_node, to_char_list("#{path}@#{attribute_key}"))
+  end
+
+  # Parses the text value of the xml node, optional path
+  defp text_value(xml_node, path \\ './text()') do
+    path = %SweetXpath{path: path, cast_to: :string}
     value = xpath(xml_node, path)
+
     case value do
       "" -> nil
       _  -> value
