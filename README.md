@@ -45,7 +45,7 @@ I've encountered with the other libraries:
 
   ```elixir
     def deps do
-      [{:recurly, "~> 0.1.0"}]
+      [{:recurly, "~> 0.1.1"}]
     end
   ```
 

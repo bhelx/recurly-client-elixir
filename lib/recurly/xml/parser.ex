@@ -101,21 +101,6 @@ defimpl Recurly.XML.Parser, for: Any do
   defp to_attribute({attr_name, _xml_node, _field, %{"nil" => "nil"}}) do
     {attr_name, nil}
   end
-  defp to_attribute({attr_name, _xml_node, field, xml_attrs = %{"childless" => true}}) do
-    href = xml_attrs["href"]
-    if href && String.length(href) > 0 do
-      {
-        attr_name,
-        %Recurly.Association{
-          href: href,
-          resource_type: field.type,
-          paginate: Field.pageable?(field)
-        }
-      }
-    else
-      # should probably raise an error
-    end
-  end
   defp to_attribute({attr_name, xml_node, field, %{"type" => "array"}}) do
     path = %SweetXpath{path: './*', is_list: true}
 
@@ -141,19 +126,31 @@ defimpl Recurly.XML.Parser, for: Any do
     end
   end
   defp to_attribute({attr_name, xml_node, field, xml_attrs}) do
-    if Types.primitive?(field.type) do # Can be parsed and cast to a primitive type
-      path = %SweetXpath{path: './text()', cast_to: field.type}
-      value = xpath(xml_node, path)
+    href = Map.get(xml_attrs, "href")
+    childless = Map.get(xml_attrs, "childless")
 
-      # TODO a better way to detect nil
-      if value == "" do
-        nil
-      else
-        {attr_name, value}
-      end
-    else # Is embedded and must parse out the children attributes
-    #IO.inspect({attr_name, xml_node, field, xml_attrs})
-      {attr_name, to_struct(xml_node, field.type, "./")}
+    cond do
+      childless && href && String.length(href) > 0 ->
+        {
+          attr_name,
+          %Recurly.Association{
+            href: href,
+            resource_type: field.type,
+            paginate: Field.pageable?(field)
+          }
+        }
+      Types.primitive?(field.type) -> # Can be parsed and cast to a primitive type
+        path = %SweetXpath{path: './text()', cast_to: field.type}
+        value = xpath(xml_node, path)
+
+        # TODO a better way to detect nil
+        if value == "" do
+          nil
+        else
+          {attr_name, value}
+        end
+      true -> # Is embedded and must parse out the children attributes
+        {attr_name, to_struct(xml_node, field.type, "./")}
     end
   end
 
