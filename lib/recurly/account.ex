@@ -24,7 +24,7 @@ defmodule Recurly.Account do
     field :last_name
     field :state, :string, read_only: true
     field :tax_exempt, :boolean
-    field :transactions, Recurly.Transaction, paginate: true
+    field :transactions, Recurly.Transaction, list: true
     field :updated_at, :date_time
     field :username
     field :vat_number

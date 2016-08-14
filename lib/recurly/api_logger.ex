@@ -28,6 +28,7 @@ defmodule Recurly.APILogger do
     Logger.debug """
       status_code: #{response.status_code}
       body: #{response.body}
+      headers: #{inspect response.headers}
     """
     {:ok, response}
   end

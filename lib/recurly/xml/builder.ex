@@ -79,6 +79,8 @@ defmodule Recurly.XML.Builder do
     field = Schema.find_field(schema, attr_name)
 
     unless field do
+      IO.inspect({attr_name, attr_value})
+      IO.inspect(resource_type)
       msg = "Invalid changeset data #{inspect({attr_name, attr_value})} for resource #{inspect(resource_type)}"
       raise ArgumentError, message: msg
     end
@@ -111,7 +113,7 @@ defmodule Recurly.XML.Builder do
     attr_value = NaiveDateTime.to_iso8601(attr_value)
     element(attr_name, %{"type" => "datetime"}, attr_value)
   end
-  def to_element({attr_name, attr_value, field = %Field{opts: [array: true]}}) do
+  def to_element({attr_name, attr_value, field = %Field{opts: [list: true]}}) do
     items = Enum.map(attr_value, fn v ->
       child_name = elem(v, 0)
       attributes = elem(v, 1)

@@ -22,7 +22,8 @@ config :recurly,
 #
 # Or configure a 3rd-party app:
 #
-config :logger, level: :info
+#config :logger, level: :info
+config :logger, level: :debug
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

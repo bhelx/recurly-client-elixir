@@ -22,7 +22,7 @@ defmodule Recurly.Subscription do
     field :plan_code
     field :quantity, :integer
     field :state, :string, read_only: true
-    field :subscription_add_ons, Recurly.SubscriptionAddOn, array: true
+    field :subscription_add_ons, Recurly.SubscriptionAddOn, list: true
     field :tax_in_cents, :integer
     field :tax_rate, :float
     field :tax_region

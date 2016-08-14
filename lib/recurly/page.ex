@@ -11,10 +11,7 @@ defmodule Recurly.Page do
     :resources,
     :next,
     options: [],
-    total: 0,
-    count: 0,
-    stream_idx: 0,
-    stale: true
+    total: 0
   ]
 
   @doc """
@@ -52,38 +49,28 @@ defmodule Recurly.Page do
     Stream.resource(
       fn -> page end,
       fn page ->
-        if page.stale do # time for the next page
-          case Recurly.Page.get_next(page) do
-            {:ok, next_page} ->
-              total = next_page.total
-              count = page.count + length(next_page.resources)
-
-              if count >= total do
-                {:halt, next_page}
-              else
-                next_page =
-                  next_page
-                  |> Map.put(:count, count)
-                  |> Map.put(:stale, false) # fresh fetched resources
-
-                resource = List.first(next_page.resources)
-
-                {[resource], next_page}
+        resources = page.resources
+        case resources do
+          [resource | rest] ->
+            {[resource], Map.put(page, :resources, rest)}
+          _ ->
+            if (resources == nil || resources == []) && page.next do
+              case Recurly.Page.get_next(page) do
+                {:ok, next_page} ->
+                  case next_page.resources do
+                    [resource | rest] ->
+                      # we are returning the first resource now
+                      # so we need to pop it off
+                      {[resource], Map.put(next_page, :resources, rest)}
+                    _ ->
+                      {:halt, page}
+                  end
+                _err ->
+                  {:halt, nil} # TODO how to handle errors?
               end
-            _err ->
-              {:halt, nil} # TODO how to handle errors?
-          end
-        else # return the next resource
-          resource = page.resources |> Enum.at(page.stream_idx)
-
-          # bump the counter and determine whether we
-          # need to fetch a new page next cycle
-          page =
-            page
-            |> Map.update!(:stream_idx, &(&1 + 1))
-            |> Map.put(:stale, page.stream_idx >= page.count - 1)
-
-          {[resource], page}
+            else
+              {:halt, page}
+            end
         end
       end,
       fn page -> page end
@@ -99,6 +86,7 @@ defmodule Recurly.Page do
   end
 
   defp parse_next_link(link_header) do
+    link_header = link_header || ""
     case Regex.run(@link_regex, link_header) do
       [_header, uri] ->
         uri

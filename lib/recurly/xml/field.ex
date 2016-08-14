@@ -11,15 +11,8 @@ defmodule Recurly.XML.Field do
     end
   end
 
-  def array?(field) do
-    case Keyword.get(field.opts, :array) do
-      true -> true
-      _ -> false
-    end
-  end
-
   def pageable?(field) do
-    case Keyword.get(field.opts, :paginate) do
+    case Keyword.get(field.opts, :list) do
       true -> true
       _ -> false
     end
