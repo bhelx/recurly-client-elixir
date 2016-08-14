@@ -8,6 +8,8 @@ defmodule Recurly.XML.BuilderTest do
       <a_string>A String</a_string>
       <an_integer>123</an_integer>
       <a_float>3.14</a_float>
+      <a_boolean>true</a_boolean>
+      <a_date_time type="datetime">2016-08-14T00:00:00.000000</a_date_time>
       <an_embedded_resource>
         <name>An Embedded Resource</name>
         <a_tripple_embedded_resource>
@@ -29,6 +31,8 @@ defmodule Recurly.XML.BuilderTest do
       a_string: "A String",
       an_integer: 123,
       a_float: 3.14,
+      a_boolean: true,
+      a_date_time: ~N[2016-08-14T00:00:00.000000],
       an_embedded_resource: [
         name: "An Embedded Resource",
         a_tripple_embedded_resource: [
