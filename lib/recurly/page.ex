@@ -20,7 +20,7 @@ defmodule Recurly.Page do
   @doc """
   Creates a new starting page
   """
-  def new(resource_type, endpoint, options \\ [])do
+  def new(resource_type, endpoint, options \\ []) do
     %Recurly.Page{
       resource_type: resource_type,
       next: endpoint,
