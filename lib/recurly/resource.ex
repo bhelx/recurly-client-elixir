@@ -87,6 +87,7 @@ defmodule Recurly.Resource do
   ```
   alias Recurly.Resource
   alias Recurly.Subscription
+  alias Recurly.Account
 
   # Suppose we want the uuids of the first 70 active subscription in order of creation (newest to oldest)
   options = [state: :active, order: :desc, sort: :created_at]
@@ -103,6 +104,19 @@ defmodule Recurly.Resource do
 
   # Since the default page size is 50, we had to fetch 2 pages.
   # This, however, was abstracted away from you.
+
+  # You can also turn associations into streams as long as their `paginate` attribute
+  # is true. Consider the example of getting the uuids of each transaction on an account
+
+  {:ok, account} = Account.find("myaccountcode")
+
+  uuids =
+    account
+    |> Map.get(:transactions)
+    |> Resource.stream
+    |> Enum.map(fn tr -> tr.uuid end)
+
+  # uuids => ["37f6aa1eae4657c0d8b430455fb6dcb6", "6bcd6bf554034b8d0c7564eae1aa6f73", ...]
   ```
   """
   def stream(resource_type, endpoint, options) do
