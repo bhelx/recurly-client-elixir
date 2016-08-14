@@ -13,6 +13,8 @@ defmodule Recurly.XML.ParserTest do
       <a_string>String</a_string>
       <an_integer type="integer">123</an_integer>
       <a_float type="float">3.14</a_float>
+      <a_boolean type="boolean">true</a_boolean>
+      <a_date_time>2016-08-14T06:42:15.675780Z</a_date_time>
       <not_in_schema>Not in Schema, Should be ignored</not_in_schema>
       <an_embedded_resource href="https://api.recurly.com/my_resource/1234/my_embedded_resource/5678">
         <name>I am embedded</name>
@@ -35,6 +37,8 @@ defmodule Recurly.XML.ParserTest do
     assert resource.a_string == "String"
     assert resource.an_integer == 123
     assert resource.a_float == 3.14
+    assert resource.a_boolean == true
+    assert {:ok, resource.a_date_time} == NaiveDateTime.from_iso8601("2016-08-14T06:42:15.675780Z")
 
     meta = resource.__meta__
     assert meta.href == "https://api.recurly.com/my_resource/1234"

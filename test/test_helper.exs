@@ -24,6 +24,8 @@ defmodule MyResource do
     field :a_float, :float
     field :an_embedded_resource, MyEmbeddedResource
     field :an_array, MyEmbeddedResource, array: true
+    field :a_boolean, :boolean
+    field :a_date_time, :date_time
   end
 end
 
