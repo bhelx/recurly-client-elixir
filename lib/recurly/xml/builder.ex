@@ -60,12 +60,12 @@ defmodule Recurly.XML.Builder do
   Given an attribute tuple from a changeset and a resource type, find and
   append the field from the schema
 
-  # Parameters
+  ## Parameters
 
   - `attr_tuple` {attr_name, attr_value} from the changset
   - `resource_type` Module which is responsible for the changset data
 
-  # Examples
+  ## Examples
 
   ```
   alias Recurly.XML.Field
@@ -91,11 +91,11 @@ defmodule Recurly.XML.Builder do
   @doc """
   Takes a tuple from changeset data and returns an xml element
 
-  # Parameters
+  ## Parameters
 
   - `changset_tuple` - contains the attribute name, the attribute value, and the `Recurly.XML.Field`.
 
-  # Example
+  ## Examples
 
   ```
   alias Recurly.XML.Field

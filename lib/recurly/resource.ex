@@ -128,14 +128,14 @@ defmodule Recurly.Resource do
   @doc """
   Gives the count of records returned given a path and options
 
-  # Parameters
+  ## Parameters
 
   - `path` the url path
   - `options` the request options. See options in the
       [pagination section](https://dev.recurly.com/docs/pagination)
       of the docs.
 
-  # Examples
+  ## Examples
 
   ```
   # suppose we want to count all subscriptions
@@ -202,7 +202,7 @@ defmodule Recurly.Resource do
   @doc """
   Gives the first resource returned given a path and options
 
-  # Parameters
+  ## Parameters
 
   - `resource` resource to parse into
   - `path` the url path
@@ -210,7 +210,7 @@ defmodule Recurly.Resource do
       [pagination section](https://dev.recurly.com/docs/pagination)
       of the docs.
 
-  # Examples
+  ## Examples
 
   ```
   alias Recurly.Resource
