@@ -16,7 +16,7 @@ defmodule Recurly.Resource do
   end
 
   @doc """
-  Returns a list of resources at the given endpoint. You will probably not
+  Returns a `Recurly.Page` at the given endpoint. You will probably not
   want to use this directly and instead use `Recurly.Resource.stream/3`.
 
   ## Parameters
