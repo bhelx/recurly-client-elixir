@@ -10,24 +10,24 @@ defmodule Recurly.Account do
   @endpoint "/accounts"
 
   schema :account do
-    field :accept_language
-    field :account_code
-    field :address, Recurly.Address
-    field :billing_info, Recurly.BillingInfo
-    field :cc_emails
-    field :closed_at, :date_time
-    field :company_name, :string
-    field :created_at, :date_time
-    field :email
-    field :entity_use_code
-    field :first_name
-    field :last_name
-    field :state, :string, read_only: true
-    field :tax_exempt, :boolean
-    field :transactions, Recurly.Transaction, list: true
-    field :updated_at, :date_time
-    field :username
-    field :vat_number
+    field :accept_language, :string
+    field :account_code,    :string
+    field :address,         Recurly.Address
+    field :billing_info,    Recurly.BillingInfo
+    field :cc_emails,       :string
+    field :closed_at,       :date_time, read_only: true
+    field :company_name,    :string
+    field :created_at,      :date_time, read_only: true
+    field :email,           :string
+    field :entity_use_code, :string
+    field :first_name,      :string
+    field :last_name,       :string
+    field :state,           :string, read_only: true
+    field :tax_exempt,      :boolean
+    field :transactions,    Recurly.Transaction, list: true
+    field :updated_at,      :date_time, read_only: true
+    field :username,        :string
+    field :vat_number,      :string
   end
 
   @doc """

@@ -63,7 +63,7 @@ defmodule Recurly.XML.Schema do
   @doc """
   Defines a field in the schema
   """
-  defmacro field(name, type \\ :string, opts \\ []) do
+  defmacro field(name, type, opts \\ []) do
     quote do
       Recurly.XML.Schema.__field__(__MODULE__, unquote(name), unquote(type), unquote(opts))
     end
