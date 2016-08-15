@@ -142,7 +142,7 @@ defmodule Recurly.Resource do
   case Recurly.Resource.count("/subscriptions", []) do
     {:ok, count} ->
       # count => 176 (or some integer)
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
 
@@ -150,7 +150,7 @@ defmodule Recurly.Resource do
   case Recurly.Resource.count("/subscriptions", state: :active) do
     {:ok, count} ->
       # count => 83 (or some integer)
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
   ```
@@ -220,7 +220,7 @@ defmodule Recurly.Resource do
   case Resource.first(%Subscription{}, "/subscriptions", state: :active) do
     {:ok, subscription} ->
       # subscription => the newest active subscription
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
 
@@ -228,7 +228,7 @@ defmodule Recurly.Resource do
   case Resource.first(%Subscription{}, "/subscriptions", state: :active, order: :asc) do
     {:ok, subscription} ->
       # subscription => the oldest active subscription
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
   ```

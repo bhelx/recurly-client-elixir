@@ -72,7 +72,7 @@ defmodule Recurly.Subscription do
   case Recurly.Subscription.count() do
     {:ok, count} ->
       # count => 176 (or some integer)
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
 
@@ -80,7 +80,7 @@ defmodule Recurly.Subscription do
   case Recurly.Subscription.count(state: :active) do
     {:ok, count} ->
       # count => 83 (or some integer)
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
   ```
@@ -105,7 +105,7 @@ defmodule Recurly.Subscription do
   case Recurly.Subscription.first(state: :active) do
     {:ok, subscription} ->
       # subscription => the newest active subscription
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
 
@@ -113,7 +113,7 @@ defmodule Recurly.Subscription do
   case Recurly.Subscription.first(state: :active, order: :asc) do
     {:ok, subscription} ->
       # subscription => the oldest active subscription
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
   ```

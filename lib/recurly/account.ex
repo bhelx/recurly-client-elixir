@@ -70,7 +70,7 @@ defmodule Recurly.Account do
   case Recurly.Account.count() do
     {:ok, count} ->
       # count => 176 (or some integer)
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
 
@@ -78,7 +78,7 @@ defmodule Recurly.Account do
   case Recurly.Account.count(state: :past_due) do
     {:ok, count} ->
       # count => 83 (or some integer)
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
   ```
@@ -103,7 +103,7 @@ defmodule Recurly.Account do
   case Recurly.Account.first(state: :active) do
     {:ok, account} ->
       # account => the newest active account
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
 
@@ -111,7 +111,7 @@ defmodule Recurly.Account do
   case Recurly.Account.first(state: :active, order: :asc) do
     {:ok, account} ->
       # account => the oldest active account
-    {:err, err} ->
+    {:error, err} ->
       # error occurred
   end
   ```
