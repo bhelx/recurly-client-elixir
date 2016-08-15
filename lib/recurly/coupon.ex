@@ -10,25 +10,25 @@ defmodule Recurly.Coupon do
   @endpoint "/coupons"
 
   schema :coupon do
-    field :coupon_code
-    field :name
-    field :discount_type
-    field :discount_in_cents, Recurly.Money
-    field :discount_percent, :integer
-    field :invoice_description
-    field :single_use, :boolean
-    field :applies_for_months, :integer
-    field :applies_to_all_plans, :boolean
-    field :max_redemptions, :integer
-    field :duration
-    field :temporal_unit
-    field :temporal_amount, :integer
+    field :applies_to_all_plans,        :boolean
     field :applies_to_non_plan_charges, :boolean
-    field :redemption_resource
+    field :coupon_code,                 :string
+    field :coupon_type,                 :string
+    field :description,                 :string
+    field :discount_type,               :string
+    field :discount_in_cents,           Recurly.Money
+    field :discount_percent,            :integer
+    field :duration,                    :string
+    field :invoice_description,         :string
+    field :max_redemptions,             :integer
     field :max_redemptions_per_account, :integer
-    field :coupon_type
-    field :unique_code_template
-    #field :plan_codes
+    field :name,                        :string
+    field :plan_codes,                  list: true
+    field :redeem_by_date,              :string
+    field :temporal_unit,               :string
+    field :temporal_amount,             :integer
+    field :redemption_resource,         :string
+    field :unique_code_template,        :string
   end
 
   @doc """
