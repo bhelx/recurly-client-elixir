@@ -7,7 +7,8 @@ defmodule Recurly.Adjustment do
   use Recurly.Resource
   alias Recurly.Resource
 
-  @endpoint "accounts/<%= account_code %>/adjustments"
+  @create_endpoint "accounts/<%= account_code %>/adjustments"
+  @find_endpoint "adjustments/<%= uuid %>"
 
   schema :adjustment do
     field :accounting_code,       :string
@@ -20,6 +21,30 @@ defmodule Recurly.Adjustment do
     field :tax_code,              :boolean
     field :tax_exempt,            :string
     field :unit_amount_in_cents,  :integer
+  end
+
+  @doc """
+  Finds a adjustment given a adjustment uuid. Returns the adjustment or an error.
+
+  ## Parameters
+
+  - `uuid` String adjustment uuid
+
+  ## Examples
+
+  ```
+  alias Recurly.NotFoundError
+
+  case Recurly.Adjustment.find("uuid") do
+    {:ok, adjustment} ->
+      # Found the adjustment
+    {:error, %NotFoundError{}} ->
+      # 404 adjustment was not found
+  end
+  ```
+  """
+  def find(uuid) do
+    Resource.find(%Recurly.Adjustment{}, find_path(uuid))
   end
 
   @doc """
@@ -44,7 +69,7 @@ defmodule Recurly.Adjustment do
   ```
   """
   def create(changeset, account_code) do
-    Resource.create(%Recurly.Adjustment{}, changeset, path(account_code))
+    Resource.create(%Recurly.Adjustment{}, changeset, create_path(account_code))
   end
 
   @doc """
@@ -55,7 +80,11 @@ defmodule Recurly.Adjustment do
     - `account_code` String account code
 
   """
-  def path(account_code) do
-    EEx.eval_string(@endpoint, account_code: account_code)
+  def create_path(account_code) do
+    EEx.eval_string(@create_endpoint, account_code: account_code)
+  end
+
+  def find_path(uuid) do
+    EEx.eval_string(@find_endpoint, uuid: uuid)
   end
 end
