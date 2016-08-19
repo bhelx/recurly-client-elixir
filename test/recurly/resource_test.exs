@@ -28,32 +28,4 @@ defmodule Recurly.ResourceTest do
   test "action should return the action given a key", %{resource: resource} do
     assert Resource.action(resource, :cancel) == [:cancel, "https://api.recurly.com/my_resource/1234/cancel"]
   end
-
-  # test "from_changeset can build embedded resource from a nested changeset" do
-  #   resource = %MyResource{
-  #     a_string: "A String",
-  #     a_float: 3.14,
-  #     an_integer: 1234,
-  #     an_embedded_resource: %MyEmbeddedResource{
-  #       name: "An Embedded Resource",
-  #       a_tripple_embedded_resource: %MyTrippleEmbeddedResource{
-  #         name: "A Tripple Embedded Resource"
-  #       }
-  #     }
-  #   }
-
-  #   changeset = [
-  #     a_string: "A String",
-  #     a_float: 3.14,
-  #     an_integer: 1234,
-  #     an_embedded_resource: [
-  #       name: "An Embedded Resource",
-  #       a_tripple_embedded_resource: [
-  #         name: "A Tripple Embedded Resource"
-  #       ]
-  #     ]
-  #   ]
-
-  #   assert resource == Resource.from_changeset(changeset, MyResource)
-  # end
 end
