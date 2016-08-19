@@ -7,8 +7,10 @@ defmodule Recurly.SubscriptionAddOn do
   use Recurly.Resource
 
   schema :subscription_add_on do
-    field :add_on_code
-    field :quantity, :integer
-    field :unit_amount_in_cents, Recurly.Money
+    field :add_on_code,           :string
+    field :quantity,              :integer
+    field :revenue_schedule_type, :string
+    field :unit_amount_in_cents,  Recurly.Money
+    field :usage_percentage,      :string
   end
 end

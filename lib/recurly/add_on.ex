@@ -10,9 +10,19 @@ defmodule Recurly.AddOn do
   @endpoint "plans/<%= plan_code %>/add_ons"
 
   schema :add_on do
-    field :add_on_code
-    field :name
-    field :unit_amount_in_cents, Recurly.Money
+    field :accounting_code,                 :string
+    field :add_on_code,                     :string
+    field :add_on_type,                     :string
+    field :default_quantity,                :integer
+    field :display_quantity_on_hosted_page, :boolean
+    field :measured_unit_id,                :string
+    field :name,                            :string
+    field :optional,                        :boolean
+    field :revenue_schedule_type,           :string
+    field :tax_code,                        :string
+    field :unit_amount_in_cents,            Recurly.Money
+    field :usage_percentage,                :string
+    field :usage_type,                      :string
   end
 
   @doc """

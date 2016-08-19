@@ -12,24 +12,38 @@ defmodule Recurly.Subscription do
   @endpoint "/subscriptions"
 
   schema :subscription do
-    field :account, Recurly.Account
-    field :activated_at, :date_time
-    field :canceled_at, :date_time
-    field :currency
-    field :current_period_started_at, :date_time
-    field :expires_at, :date_time
-    field :plan, Recurly.Plan
-    field :plan_code
-    field :quantity, :integer
-    field :state, :string, read_only: true
-    field :subscription_add_ons, Recurly.SubscriptionAddOn, list: true
-    field :tax_in_cents, :integer
-    field :tax_rate, :float
-    field :tax_region
-    field :tax_type
-    field :unit_amount_in_cents, :integer
-    field :updated_at, :date_time
-    field :uuid
+    field :account,                    Recurly.Account
+    field :activated_at,               :date_time, read_only: true
+    field :canceled_at,                :date_time, read_only: true
+    field :currency,                   :string
+    field :current_period_started_at,  :date_time
+    field :expires_at,                 :date_time, read_only: true
+    field :bank_account_authorized_at, :string
+    field :bulk,                       :boolean
+    field :coupon_code,                :string
+    field :collection_method,          :string
+    field :customer_notes,             :string
+    field :first_renewal_date,         :date_time
+    field :net_terms,                  :string
+    field :plan,                       Recurly.Plan
+    field :plan_code,                  :string
+    field :po_number,                  :string
+    field :quantity,                   :integer
+    field :state,                      :string, read_only: true
+    field :subscription_add_ons,       Recurly.SubscriptionAddOn, list: true
+    field :starts_at,                  :date_time
+    field :tax_in_cents,               :integer
+    field :tax_rate,                   :float
+    field :tax_region,                 :string
+    field :tax_type,                   :string
+    field :terms_and_conditions,       :string
+    field :total_billing_cycles,       :string
+    field :trial_ends_at,              :date_time
+    field :unit_amount_in_cents,       :integer
+    field :updated_at,                 :date_time, read_only: true
+    field :uuid,                       :string
+    field :vat_reverse_charge_notes,   :string
+    field :revenue_schedule_type,      :string
   end
 
   @doc """
