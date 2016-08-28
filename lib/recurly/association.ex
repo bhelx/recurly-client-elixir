@@ -42,5 +42,12 @@ defmodule Recurly.Association do
   #=>   resource_type: Recurly.BillingInfo}
   ```
   """
+
+  @type t :: %__MODULE__{
+    href:          String.t,
+    resource_type: atom,
+    paginate:      boolean,
+  }
+
   defstruct [:href, :resource_type, paginate: false]
 end

@@ -5,9 +5,25 @@ defmodule Recurly.AddOn do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,AddOn}
 
   @endpoint "plans/<%= plan_code %>/add_ons"
+
+  @type t :: %__MODULE__{
+    accounting_code:                 String.t,
+    add_on_code:                     String.t,
+    add_on_type:                     String.t,
+    default_quantity:                integer,
+    display_quantity_on_hosted_page: boolean,
+    measured_unit_id:                String.t,
+    name:                            String.t,
+    optional:                        boolean,
+    revenue_schedule_type:           String.t,
+    tax_code:                        String.t,
+    unit_amount_in_cents:            Recurly.Money,
+    usage_percentage:                String.t,
+    usage_type:                      String.t,
+  }
 
   schema :add_on do
     field :accounting_code,                 :string
@@ -55,9 +71,10 @@ defmodule Recurly.AddOn do
   end
   ```
   """
+  @spec create(keyword) :: {:ok, AddOn.t} | {:error, any}
   def create(changeset) do
     plan_code = Keyword.fetch!(changeset, :plan_code)
-    Resource.create(%Recurly.AddOn{}, changeset, path(plan_code))
+    Resource.create(%AddOn{}, changeset, path(plan_code))
   end
 
   @doc """
@@ -68,6 +85,7 @@ defmodule Recurly.AddOn do
     - `plan_code` String plan code
 
   """
+  @spec path(String.t) :: String.t
   def path(plan_code) do
     EEx.eval_string(@endpoint, plan_code: plan_code)
   end

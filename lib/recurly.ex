@@ -311,14 +311,17 @@ defmodule Recurly do
   """
 
   @doc false
+  @spec api_version() :: String.t
   def api_version, do: "2.4"
 
   @doc false
+  @spec client_version() :: String.t
   def client_version do
     {:ok, vsn} = :application.get_key(:recurly, :vsn)
     List.to_string(vsn)
   end
 
   @doc false
+  @spec user_agent() :: String.t
   def user_agent, do: "Recurly/Elixir/#{client_version}"
 end

@@ -5,9 +5,31 @@ defmodule Recurly.Coupon do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Coupon,Money}
 
   @endpoint "/coupons"
+
+  @type t :: %__MODULE__{
+    applies_to_all_plans:        boolean,
+    applies_to_non_plan_charges: boolean,
+    coupon_code:                 String.t,
+    coupon_type:                 String.t,
+    description:                 String.t,
+    discount_type:               String.t,
+    discount_in_cents:           Money.t,
+    discount_percent:            integer,
+    duration:                    String.t,
+    invoice_description:         String.t,
+    max_redemptions:             integer,
+    max_redemptions_per_account: integer,
+    name:                        String.t,
+    plan_codes:                  list,
+    redeem_by_date:              String.t,
+    temporal_unit:               String.t,
+    temporal_amount:             integer,
+    redemption_resource:         String.t,
+    unique_code_template:        String.t,
+  }
 
   schema :coupon do
     field :applies_to_all_plans,        :boolean
@@ -16,7 +38,7 @@ defmodule Recurly.Coupon do
     field :coupon_type,                 :string
     field :description,                 :string
     field :discount_type,               :string
-    field :discount_in_cents,           Recurly.Money
+    field :discount_in_cents,           Money
     field :discount_percent,            :integer
     field :duration,                    :string
     field :invoice_description,         :string
@@ -32,25 +54,28 @@ defmodule Recurly.Coupon do
   end
 
   @doc """
-  Lists all the coupons. See [the couopons dev docs](https://dev.recurly.com/docs/list-active-coupons) for more details.
+  Creates a stream of coupons given some options.
 
   ## Parameters
 
-  - `options` Keyword list of GET params
+  - `options` Keyword list of the request options. See options in the
+      [coupon list section](https://dev.recurly.com/docs/list-active-coupons)
+      of the docs.
 
   ## Examples
 
+  See `Recurly.Resource.stream/3` for more detailed examples of
+  working with resource streams.
+
   ```
-  case Recurly.Coupon.list(state: "redeemable") do
-    {:ok, coupons} ->
-      # list of redeemable coupons
-    {:error, error} ->
-      # error happened
-  end
+  # stream of coupons sorted from most recently
+  # updated to least recently updated
+  stream = Recurly.Coupon.stream(sort: :updated_at)
   ```
   """
-  def list(options \\ []) do
-    Resource.list(%Recurly.Coupon{}, @endpoint, options)
+  @spec stream(keyword) :: Enumerable.t
+  def stream(options \\ []) do
+    Resource.stream(stream, @endpoint, options)
   end
 
   @doc """
@@ -73,8 +98,9 @@ defmodule Recurly.Coupon do
   end
   ```
   """
+  @spec find(String.t) :: {:ok, Coupon.t} | {:error, any}
   def find(coupon_code) do
-    Resource.find(%Recurly.Coupon{}, path(coupon_code))
+    Resource.find(%Coupon{}, path(coupon_code))
   end
 
   @doc """
@@ -107,8 +133,9 @@ defmodule Recurly.Coupon do
   end
   ```
   """
+  @spec create(keyword) :: {:ok, Coupon.t} | {:error, any}
   def create(changeset) do
-    Resource.create(%Recurly.Coupon{}, changeset, @endpoint)
+    Resource.create(%Coupon{}, changeset, @endpoint)
   end
 
   @doc """
@@ -119,6 +146,7 @@ defmodule Recurly.Coupon do
     - `coupon_code` String coupon code
 
   """
+  @spec path(String.t) :: String.t
   def path(coupon_code) do
     Path.join(@endpoint, coupon_code)
   end

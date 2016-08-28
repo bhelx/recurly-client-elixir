@@ -5,9 +5,7 @@ defmodule Recurly.XML.Builder do
   """
 
   import XmlBuilder
-  alias Recurly.XML.Types
-  alias Recurly.XML.Schema
-  alias Recurly.XML.Field
+  alias Recurly.XML.{Types,Schema,Field}
 
   @doc """
   Generates an xml document representing a changeset.
@@ -79,8 +77,6 @@ defmodule Recurly.XML.Builder do
     field = Schema.find_field(schema, attr_name)
 
     unless field do
-      IO.inspect({attr_name, attr_value})
-      IO.inspect(resource_type)
       msg = "Invalid changeset data #{inspect({attr_name, attr_value})} for resource #{inspect(resource_type)}"
       raise ArgumentError, message: msg
     end

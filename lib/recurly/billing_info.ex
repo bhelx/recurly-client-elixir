@@ -6,6 +6,30 @@ defmodule Recurly.BillingInfo do
   """
   use Recurly.Resource
 
+  @type t :: %__MODULE__{
+    address1:           String.t,
+    address2:           String.t,
+    card_type:          String.t,
+    city:               String.t,
+    company:            String.t,
+    country:            String.t,
+    currency:           String.t,
+    first_name:         String.t,
+    first_six:          String.t,
+    ip_address:         String.t,
+    last_four:          String.t,
+    last_name:          String.t,
+    month:              integer,
+    number:             String.t,
+    phone:              String.t,
+    state:              String.t,
+    token_id:           String.t,
+    vat_number:         String.t,
+    verification_value: String.t,
+    year:               integer,
+    zip:                String.t,
+  }
+
   schema :billing_info do
     field :address1,           :string
     field :address2,           :string

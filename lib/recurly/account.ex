@@ -5,15 +5,36 @@ defmodule Recurly.Account do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource, Account, Address, Association, BillingInfo, Transaction}
 
   @endpoint "/accounts"
+
+  @type t :: %__MODULE__{
+    accept_language: String.t,
+    account_code:    String.t,
+    address:         Address.t,
+    billing_info:    Association.t,
+    cc_emails:       String.t,
+    closed_at:       NaiveDateTime.t,
+    company_name:    String.t,
+    created_at:      NaiveDateTime.t,
+    email:           String.t,
+    entity_use_code: String.t,
+    first_name:      String.t,
+    last_name:       String.t,
+    state:           String.t,
+    tax_exempt:      boolean,
+    transactions:    Association.t,
+    updated_at:      NaiveDateTime.t,
+    username:        String.t,
+    vat_number:      String.t,
+  }
 
   schema :account do
     field :accept_language, :string
     field :account_code,    :string
-    field :address,         Recurly.Address
-    field :billing_info,    Recurly.BillingInfo
+    field :address,         Address
+    field :billing_info,    BillingInfo
     field :cc_emails,       :string
     field :closed_at,       :date_time, read_only: true
     field :company_name,    :string
@@ -24,7 +45,7 @@ defmodule Recurly.Account do
     field :last_name,       :string
     field :state,           :string, read_only: true
     field :tax_exempt,      :boolean
-    field :transactions,    Recurly.Transaction, list: true
+    field :transactions,    Transaction, list: true
     field :updated_at,      :date_time, read_only: true
     field :username,        :string
     field :vat_number,      :string
@@ -50,8 +71,9 @@ defmodule Recurly.Account do
   stream = Recurly.Account.stream(state: :past_due, sort: :updated_at)
   ```
   """
+  @spec stream(keyword) :: Enumerable.t
   def stream(options \\ []) do
-    Recurly.Resource.stream(Recurly.Account, @endpoint, options)
+    Resource.stream(Account, @endpoint, options)
   end
 
   @doc """
@@ -83,8 +105,9 @@ defmodule Recurly.Account do
   end
   ```
   """
+  @spec count(keyword) :: {:ok, integer} | {:error, any}
   def count(options \\ []) do
-    Recurly.Resource.count(@endpoint, options)
+    Resource.count(@endpoint, options)
   end
 
   @doc """
@@ -116,8 +139,9 @@ defmodule Recurly.Account do
   end
   ```
   """
+  @spec first(keyword()) :: {:ok, Account.t} | {:error, any}
   def first(options \\ []) do
-    Recurly.Resource.first(%Recurly.Account{}, @endpoint, options)
+    Resource.first(%Account{}, @endpoint, options)
   end
 
   @doc """
@@ -140,8 +164,9 @@ defmodule Recurly.Account do
   end
   ```
   """
+  @spec find(String.t) :: {:ok, Account.t} | {:error, any}
   def find(account_code) do
-    Resource.find(%Recurly.Account{}, path(account_code))
+    Resource.find(%Account{}, path(account_code))
   end
 
   @doc """
@@ -164,8 +189,9 @@ defmodule Recurly.Account do
   end
   ```
   """
+  @spec create(keyword) :: {:ok, Account.t} | {:error, any}
   def create(changeset) do
-    Resource.create(%Recurly.Account{}, changeset, @endpoint)
+    Resource.create(%Account{}, changeset, @endpoint)
   end
 
   @doc """
@@ -194,7 +220,8 @@ defmodule Recurly.Account do
   end
   ```
   """
-  def update(account = %Recurly.Account{}, changeset) do
+  @spec update(Account.t, keyword) :: {:ok, Account.t} | {:error, any}
+  def update(account = %Account{}, changeset) do
     Resource.update(account, changeset)
   end
 
@@ -206,6 +233,7 @@ defmodule Recurly.Account do
     - `account_code` String account code
 
   """
+  @spec path(String.t) :: String.t
   def path(account_code) do
     Path.join(@endpoint, account_code)
   end

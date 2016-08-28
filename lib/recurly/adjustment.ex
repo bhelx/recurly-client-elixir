@@ -5,10 +5,23 @@ defmodule Recurly.Adjustment do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Adjustment,Resource}
 
   @account_endpoint "accounts/<%= account_code %>/adjustments"
   @find_endpoint "adjustments/<%= uuid %>"
+
+  @type t :: %__MODULE__{
+    accounting_code:       String.t,
+    currency:              String.t,
+    description:           String.t,
+    end_date:              NaiveDateTime.t,
+    quantity:              integer,
+    revenue_schedule_type: String.t,
+    start_date:            NaiveDateTime.t,
+    tax_code:              boolean,
+    tax_exempt:            String.t,
+    unit_amount_in_cents:  integer,
+  }
 
   schema :adjustment do
     field :accounting_code,       :string
@@ -43,8 +56,9 @@ defmodule Recurly.Adjustment do
   end
   ```
   """
+  @spec find(String.t) :: {:ok, Adjustment.t} | {:error, any}
   def find(uuid) do
-    Resource.find(%Recurly.Adjustment{}, find_path(uuid))
+    Resource.find(%Adjustment{}, find_path(uuid))
   end
 
   @doc """
@@ -65,8 +79,9 @@ defmodule Recurly.Adjustment do
   stream = Recurly.Adjustment.stream("myaccountcode", sort: :updated_at)
   ```
   """
+  @spec stream(String.t, keyword) :: Enumerable.t
   def stream(account_code, options \\ []) do
-    Recurly.Resource.stream(Recurly.Adjustment, account_path(account_code), options)
+    Resource.stream(Adjustment, account_path(account_code), options)
   end
 
   @doc """
@@ -90,8 +105,9 @@ defmodule Recurly.Adjustment do
   end
   ```
   """
+  @spec create(keyword, String.t) :: {:ok, Adjustment.t} | {:error, any}
   def create(changeset, account_code) do
-    Resource.create(%Recurly.Adjustment{}, changeset, account_path(account_code))
+    Resource.create(%Adjustment{}, changeset, account_path(account_code))
   end
 
   @doc """
@@ -102,6 +118,7 @@ defmodule Recurly.Adjustment do
     - `account_code` String account code
 
   """
+  @spec account_path(String.t) :: String.t
   def account_path(account_code) do
     EEx.eval_string(@account_endpoint, account_code: account_code)
   end
@@ -114,6 +131,7 @@ defmodule Recurly.Adjustment do
     - `uuid` String uuid
 
   """
+  @spec find_path(String.t) :: String.t
   def find_path(uuid) do
     EEx.eval_string(@find_endpoint, uuid: uuid)
   end

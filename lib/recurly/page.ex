@@ -3,22 +3,32 @@ defmodule Recurly.Page do
   This module is responsible for working with pagination
   data. TODO needs more docs.
   """
+  alias Recurly.{Resource,Page}
 
   @link_regex ~r/<([^>]+)>; rel\=\"next\.*"/
 
+  @type t :: %__MODULE__{
+    next:           String.t,
+    resource_type:  atom,
+    resources:      list,
+    options:        Keyword.t,
+    total:          integer,
+  }
+
   defstruct [
+    :next,
     :resource_type,
     :resources,
-    :next,
     options: [],
-    total: 0
+    total: 0,
   ]
 
   @doc """
   Creates a new starting page
   """
+  @spec new(atom, String.t, keyword) :: Page.t
   def new(resource_type, endpoint, options \\ []) do
-    %Recurly.Page{
+    %Page{
       resource_type: resource_type,
       next: endpoint,
       options: options
@@ -28,11 +38,12 @@ defmodule Recurly.Page do
   @doc """
   Create a new page from a list response.
   """
+  @spec from_response(atom, list, map) :: Page.t
   def from_response(resource, resources, headers = %{}) do
     resource_type = resource.__struct__
     next = parse_next_link(headers["Link"])
     {records, _} = Integer.parse(headers["X-Records"])
-    %Recurly.Page{
+    %Page{
       resource_type: resource_type,
       resources: resources,
       next: next,
@@ -45,7 +56,8 @@ defmodule Recurly.Page do
 
   TODO needs refactoring and documentation
   """
-  def to_stream(page = %Recurly.Page{}) do
+  @spec to_stream(Page.t) :: Enumerable.t
+  def to_stream(page = %Page{}) do
     Stream.resource(
       fn -> page end,
       fn page ->
@@ -54,8 +66,8 @@ defmodule Recurly.Page do
           [resource | rest] ->
             {[resource], Map.put(page, :resources, rest)}
           _ ->
-            if (resources == nil || resources == []) && page.next do
-              case Recurly.Page.get_next(page) do
+            if resources == nil || resources == [] && page.next do
+              case Page.get_next(page) do
                 {:ok, next_page} ->
                   case next_page.resources do
                     [resource | rest] ->
@@ -80,11 +92,13 @@ defmodule Recurly.Page do
   @doc """
   Fetches the next page
   """
-  def get_next(page = %Recurly.Page{}) do
+  @spec get_next(Page.t) :: {:ok, Page.t} | {:error, any}
+  def get_next(page = %Page{}) do
     resource = struct(page.resource_type)
-    Recurly.Resource.list(resource, page.next, [])
+    Resource.list(resource, page.next, [])
   end
 
+  @spec parse_next_link(String.t) :: String.t
   defp parse_next_link(link_header) do
     link_header = link_header || ""
     case Regex.run(@link_regex, link_header) do

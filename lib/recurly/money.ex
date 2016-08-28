@@ -5,8 +5,30 @@ defmodule Recurly.Money do
   """
   use Recurly.Resource
 
-  # TODO could maybe be smarter?
-  # Could use a map or something
+  @type t :: %__MODULE__{
+    AUD: integer,
+    BRL: integer,
+    GBP: integer,
+    CAD: integer,
+    CZK: integer,
+    DKK: integer,
+    EUR: integer,
+    HUF: integer,
+    INR: integer,
+    ILS: integer,
+    MXN: integer,
+    NOK: integer,
+    NZD: integer,
+    PLN: integer,
+    SGD: integer,
+    SEK: integer,
+    CHF: integer,
+    ZAR: integer,
+    USD: integer,
+  }
+
+  # TODO could maybe be smarter? Could use a map or something
+  # maybe we just need to change the inspect implementation
   schema :money do
     field :AUD, :integer
     field :BRL, :integer

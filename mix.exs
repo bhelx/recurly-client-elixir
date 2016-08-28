@@ -24,9 +24,10 @@ defmodule Recurly.Mixfile do
       {:sweet_xml, "~> 0.6.1"},
       {:exml, "~> 0.1"},
       {:xml_builder, "~> 0.0.8"},
-      {:earmark, "~> 0.1", only: :dev},
-      {:ex_doc, "~> 0.11", only: :dev},
-      {:credo, "~> 0.4", only: [:dev, :test]}
+      {:earmark, "~> 1.0", only: :dev},
+      {:ex_doc, "~> 0.13", only: :dev},
+      {:credo, "~> 0.4", only: [:dev, :test]},
+      {:dialyxir, "~> 0.3.5", only: [:dev]}
     ]
   end
 

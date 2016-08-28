@@ -8,11 +8,13 @@ defmodule Recurly.XML.Types do
   @doc """
   Returns a list of atoms of primitive xml types
   """
+  @spec primitives() :: list(atom)
   def primitives, do: @primitive_types
 
   @doc """
   Checks whether the given atom is an xml primitive
   """
+  @spec primitive?(atom) :: boolean
   def primitive?(type) do
     Enum.member?(@primitive_types, type)
   end

@@ -5,9 +5,26 @@ defmodule Recurly.Transaction do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Transaction,TransactionDetails}
 
   @endpoint "/transactions"
+
+  @type t :: %__MODULE__{
+    amount_in_cents:  integer,
+    currency:         String.t,
+    details:          TransactionDetails.t,
+    ip_address:       String.t,
+    payment_method:   String.t,
+    recurring_type:   boolean,
+    reference:        String.t,
+    refundable_type:  boolean,
+    source:           String.t,
+    tax_in_cents:     integer,
+    test_type:        boolean,
+    transaction_code: String.t,
+    uuid:             String.t,
+    voidable_type:    boolean,
+  }
 
   schema :transaction do
     field :amount_in_cents,  :integer
@@ -46,8 +63,9 @@ defmodule Recurly.Transaction do
   end
   ```
   """
+  @spec find(String.t) :: {:ok, Transaction.t} | {:error, any}
   def find(uuid) do
-    Resource.find(%Recurly.Transaction{}, path(uuid))
+    Resource.find(%Transaction{}, path(uuid))
   end
 
   @doc """
@@ -70,8 +88,9 @@ defmodule Recurly.Transaction do
   end
   ```
   """
+  @spec create(keyword) :: {:ok, Transaction.t} | {:error, any}
   def create(changeset) do
-    Resource.create(%Recurly.Transaction{}, changeset, @endpoint)
+    Resource.create(%Transaction{}, changeset, @endpoint)
   end
 
   @doc """
@@ -100,7 +119,8 @@ defmodule Recurly.Transaction do
   end
   ```
   """
-  def update(transaction = %Recurly.Transaction{}, changeset) do
+  @spec update(Transaction.t, keyword) :: {:ok, Transaction.t} | {:error, any}
+  def update(transaction = %Transaction{}, changeset) do
     Resource.update(transaction, changeset)
   end
 
@@ -112,6 +132,7 @@ defmodule Recurly.Transaction do
     - `transaction_code` String transaction code
 
   """
+  @spec path(String.t) :: String.t
   def path(transaction_code) do
     Path.join(@endpoint, transaction_code)
   end

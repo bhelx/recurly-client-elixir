@@ -118,7 +118,7 @@ defimpl Recurly.XML.Parser, for: Any do
     {attr_name, NaiveDateTime.from_iso8601!(val)}
   end
   defp to_attribute({attr_name, xml_node, %Field{type: :boolean}, _xml_attrs}) do
-    val = text_value(xml_node) |> String.downcase
+    val = xml_node |> text_value |> String.downcase
     case val do
       "true" -> {attr_name, true}
       "false" -> {attr_name, false}

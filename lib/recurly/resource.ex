@@ -6,6 +6,7 @@ defmodule Recurly.Resource do
 
   alias Recurly.API
   alias Recurly.XML
+  alias Recurly.{Resource,Page,Association}
 
   @doc false
   defmacro __using__(_) do
@@ -38,11 +39,12 @@ defmodule Recurly.Resource do
   end
   ```
   """
+  @spec list(struct, String.t, keyword) :: {:ok, Page.t} | {:error, any}
   def list(resource, path, options) do
     case API.make_request(:get, path, "", params: options) do
       {:ok, xml_string, headers} ->
-        resources = Recurly.XML.Parser.parse(resource, xml_string, true)
-        page = Recurly.Page.from_response(resource, resources, headers)
+        resources = XML.Parser.parse(resource, xml_string, true)
+        page = Page.from_response(resource, resources, headers)
         {:ok, page}
       err ->
         err
@@ -52,12 +54,12 @@ defmodule Recurly.Resource do
   @doc """
   Creates a stream from a `Recurly.Association`. See `Recurly.Resource.stream/3`.
   """
-  def stream(association = %Recurly.Association{paginate: true}, options \\ []) do
-    resource_type = association.resource_type
-    endpoint = association.href
-
-    Recurly.Page.new(resource_type, endpoint, options)
-    |> Recurly.Page.to_stream
+  @spec stream(Association.t, keyword) :: Enumerable.t
+  def stream(association = %Association{paginate: true}, options \\ []) do
+    association
+    |> Map.get(:resource_type)
+    |> Page.new(association.href, options)
+    |> Page.to_stream
   end
 
   @doc """
@@ -119,10 +121,11 @@ defmodule Recurly.Resource do
   # uuids => ["37f6aa1eae4657c0d8b430455fb6dcb6", "6bcd6bf554034b8d0c7564eae1aa6f73", ...]
   ```
   """
+  @spec stream(atom, String.t, keyword) :: Enumerable.t
   def stream(resource_type, endpoint, options) do
     resource_type
-    |> Recurly.Page.new(endpoint, options)
-    |> Recurly.Page.to_stream
+    |> Page.new(endpoint, options)
+    |> Page.to_stream
   end
 
   @doc """
@@ -155,6 +158,7 @@ defmodule Recurly.Resource do
   end
   ```
   """
+  @spec count(String.t, keyword) :: {:ok, integer} | {:error, any}
   def count(path, options) do
     case API.make_request(:head, path, "", params: options) do
       {:ok, _xml_string, headers} ->
@@ -190,6 +194,7 @@ defmodule Recurly.Resource do
   end
   ```
   """
+  @spec find(struct, String.t) :: {:ok, struct} | {:error, any}
   def find(resource, path) do
     case API.make_request(:get, path) do
       {:ok, xml_string, _headers} ->
@@ -233,6 +238,7 @@ defmodule Recurly.Resource do
   end
   ```
   """
+  @spec first(struct, String.t, keyword) :: {:ok, struct} | {:error, any}
   def first(resource, path, options) do
     options = Keyword.merge(options, per_page: 1)
     case Recurly.Resource.list(resource, path, options) do

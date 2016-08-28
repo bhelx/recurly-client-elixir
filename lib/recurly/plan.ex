@@ -5,9 +5,30 @@ defmodule Recurly.Plan do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Plan,Money}
 
   @endpoint "/plans"
+
+  @type t :: %__MODULE__{
+    accounting_code:                 String.t,
+    display_quantity:                boolean,
+    description:                     String.t,
+    name:                            String.t,
+    plan_code:                       String.t,
+    plan_interval_unit:              String.t,
+    plan_interval_length:            integer,
+    revenue_schedule_type:           String.t,
+    setup_fee_accounting_code:       String.t,
+    setup_fee_in_cents:              Money,
+    setup_fee_revenue_schedule_type: String.t,
+    success_url:                     String.t,
+    total_billing_cycles:            String.t,
+    trial_interval_unit:             String.t,
+    trial_interval_length:           integer,
+    unit_amount_in_cents:            Money,
+    tax_code:                        String.t,
+    tax_exempt:                      boolean,
+  }
 
   schema :plan do
     field :accounting_code,                 :string

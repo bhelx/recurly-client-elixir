@@ -7,12 +7,47 @@ defmodule Recurly.Subscription do
   TODO implement postpone and reactivate
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Subscription,Account,Plan,SubscriptionAddOn}
 
   @endpoint "/subscriptions"
 
+  @type t :: %__MODULE__{
+    account:                    Account.t,
+    activated_at:               NaiveDateTime.t,
+    canceled_at:                NaiveDateTime.t,
+    currency:                   String.t,
+    current_period_started_at:  NaiveDateTime.t,
+    expires_at:                 NaiveDateTime.t,
+    bank_account_authorized_at: String.t,
+    bulk:                       boolean,
+    coupon_code:                String.t,
+    collection_method:          String.t,
+    customer_notes:             String.t,
+    first_renewal_date:         NaiveDateTime.t,
+    net_terms:                  String.t,
+    plan:                       Plan.t,
+    plan_code:                  String.t,
+    po_number:                  String.t,
+    quantity:                   integer,
+    state:                      String.t,
+    subscription_add_ons:       list(SubscriptionAddOn.t),
+    starts_at:                  NaiveDateTime.t,
+    tax_in_cents:               integer,
+    tax_rate:                   float,
+    tax_region:                 String.t,
+    tax_type:                   String.t,
+    terms_and_conditions:       String.t,
+    total_billing_cycles:       String.t,
+    trial_ends_at:              NaiveDateTime.t,
+    unit_amount_in_cents:       integer,
+    updated_at:                 NaiveDateTime.t,
+    uuid:                       String.t,
+    vat_reverse_charge_notes:   String.t,
+    revenue_schedule_type:      String.t,
+  }
+
   schema :subscription do
-    field :account,                    Recurly.Account
+    field :account,                    Account
     field :activated_at,               :date_time, read_only: true
     field :canceled_at,                :date_time, read_only: true
     field :currency,                   :string
@@ -25,12 +60,12 @@ defmodule Recurly.Subscription do
     field :customer_notes,             :string
     field :first_renewal_date,         :date_time
     field :net_terms,                  :string
-    field :plan,                       Recurly.Plan
+    field :plan,                       Plan
     field :plan_code,                  :string
     field :po_number,                  :string
     field :quantity,                   :integer
     field :state,                      :string, read_only: true
-    field :subscription_add_ons,       Recurly.SubscriptionAddOn, list: true
+    field :subscription_add_ons,       SubscriptionAddOn, list: true
     field :starts_at,                  :date_time
     field :tax_in_cents,               :integer
     field :tax_rate,                   :float
@@ -66,8 +101,9 @@ defmodule Recurly.Subscription do
   stream = Recurly.Subscription.stream(state: :active, sort: :updated_at)
   ```
   """
+  @spec stream(keyword) :: Enumerable.t
   def stream(options \\ []) do
-    Recurly.Resource.stream(Recurly.Subscription, @endpoint, options)
+    Resource.stream(Subscription, @endpoint, options)
   end
 
   @doc """
@@ -99,8 +135,9 @@ defmodule Recurly.Subscription do
   end
   ```
   """
+  @spec count(keyword) :: {:ok, integer} | {:error, any}
   def count(options \\ []) do
-    Recurly.Resource.count(@endpoint, options)
+    Resource.count(@endpoint, options)
   end
 
   @doc """
@@ -132,8 +169,9 @@ defmodule Recurly.Subscription do
   end
   ```
   """
+  @spec first(keyword) :: {:ok, Subscription.t} | {:error, any}
   def first(options \\ []) do
-    Recurly.Resource.first(%Recurly.Subscription{}, @endpoint, options)
+    Resource.first(%Subscription{}, @endpoint, options)
   end
 
   @doc """
@@ -156,6 +194,7 @@ defmodule Recurly.Subscription do
   end
   ```
   """
+  @spec first(keyword) :: {:ok, Subscription.t} | {:error, any}
   def find(uuid) do
     Resource.find(%Recurly.Subscription{}, path(uuid))
   end
@@ -202,8 +241,9 @@ defmodule Recurly.Subscription do
   end
   ```
   """
+  @spec create(keyword) :: {:ok, Subscription.t} | {:error, any}
   def create(changeset) do
-    Resource.create(%Recurly.Subscription{}, changeset, @endpoint)
+    Resource.create(%Subscription{}, changeset, @endpoint)
   end
 
   @doc """
@@ -212,7 +252,8 @@ defmodule Recurly.Subscription do
 
   TODO more docs
   """
-  def cancel(subscription = %Recurly.Subscription{}) do
+  @spec cancel(Subscription.t) :: {:ok, Subscription.t} | {:error, any}
+  def cancel(subscription = %Subscription{}) do
     Resource.perform_action(subscription, :cancel)
   end
 
@@ -222,7 +263,8 @@ defmodule Recurly.Subscription do
 
   TODO more docs
   """
-  def terminate(subscription = %Recurly.Subscription{}) do
+  @spec terminate(Subscription.t) :: {:ok, Subscription.t} | {:error, any}
+  def terminate(subscription = %Subscription{}) do
     Resource.perform_action(subscription, :terminate)
   end
 
@@ -234,6 +276,7 @@ defmodule Recurly.Subscription do
     - `uuid` String subscription uuid
 
   """
+  @spec path(String.t) :: String.t
   def path(uuid) do
     Path.join(@endpoint, uuid)
   end

@@ -7,6 +7,8 @@ defmodule Recurly.API do
   alias Recurly.APILogger
 
   @doc """
+  Makes a request to the Recurly server. You will probably never need to call
+  this directly.
 
   ## Parameters
 
@@ -16,6 +18,7 @@ defmodule Recurly.API do
   - `options` Keyword list of extra options
   - `headers` Map of extra headers
   """
+  @spec make_request(atom, String.t, String.t, keyword, Map.t) :: {:ok, String.t, Map.t} | {:error, any}
   def make_request(method, path, body \\ "", options \\ [], headers \\ %{}) do
     headers = Map.to_list(req_headers(headers))
     endpoint = req_endpoint(path)
@@ -23,12 +26,16 @@ defmodule Recurly.API do
 
     APILogger.log_request(method, endpoint, body, headers, options)
 
-    HTTPoison.request(method, endpoint, body, headers, options)
+    response = HTTPoison.request(method, endpoint, body, headers, options)
+
+    response
     |> decompress
     |> APILogger.log_response
     |> handle_response
   end
 
+  @doc false
+  @spec decompress({:ok, Response.t}) :: {:ok, String.t}
   defp decompress({:ok, response = %Response{}}) do
     gzipped = Enum.any?(response.headers, fn (kv) ->
       case kv do
@@ -45,6 +52,8 @@ defmodule Recurly.API do
   end
   defp decompress(response), do: response
 
+  @doc false
+  @spec handle_response({atom, Response.t}) :: {:ok, String.t, Map.t}
   defp handle_response({:ok, %Response{status_code: code, body: xml_string, headers: headers}}) when code >= 200 and code < 400 do
     headers = Enum.into(headers, %{})
     {:ok, xml_string, headers}
@@ -78,6 +87,7 @@ defmodule Recurly.API do
   ## Parameters
     * `extras` keyword list of extra opts to merge into defaults
   """
+  @spec req_options(keyword) :: keyword
   def req_options(extras) do
     defaults = [
       recv_timeout: 15_000,
@@ -95,6 +105,7 @@ defmodule Recurly.API do
   ## Parameters
     * `path` string relative path
   """
+  @spec req_endpoint(String.t) :: String.t
   def req_endpoint(path) do
     case URI.parse(path) do
       %{scheme: "https"} -> path
@@ -109,6 +120,7 @@ defmodule Recurly.API do
   ## Parameters
     * `extras` a Map of extra opts to merge into defaults
   """
+  @spec req_headers(Map.t) :: Map.t
   def req_headers(extras) do
     %{}
     |> Map.put("User-Agent",       Recurly.user_agent)
@@ -119,10 +131,14 @@ defmodule Recurly.API do
     |> Map.merge(extras)
   end
 
+  @doc false
+  @spec api_key :: String.t
   defp api_key do
     Application.get_env(:recurly, :private_key) || System.get_env "RECURLY_PRIVATE_KEY"
   end
 
+  @doc false
+  @spec api_subdomain :: String.t
   defp api_subdomain do
     Application.get_env(:recurly, :subdomain) || System.get_env "RECURLY_SUBDOMAIN"
   end
