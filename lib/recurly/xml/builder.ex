@@ -79,8 +79,6 @@ defmodule Recurly.XML.Builder do
     field = Schema.find_field(schema, attr_name)
 
     unless field do
-      IO.inspect({attr_name, attr_value})
-      IO.inspect(resource_type)
       msg = "Invalid changeset data #{inspect({attr_name, attr_value})} for resource #{inspect(resource_type)}"
       raise ArgumentError, message: msg
     end
