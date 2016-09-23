@@ -12,27 +12,27 @@ defmodule Recurly.Invoice do
   schema :invoice do
     field :account,               Account
     field :address,               Address
-    field :uuid,                  :string
-    field :invoice_number_prefix, :string
-    field :invoice_number,        :string
-    field :state,                 :string
-    field :po_number,             :string
-    field :vat_number,            :string
-    field :subtotal_in_cents,     :integer
-    field :tax_in_cetns,          :integer
-    field :total_in_cents,        :integer
-    field :currency,              :string
-    field :updated_at,            :date_time, read_only: true
-    field :created_at,            :date_time, read_only: true
     field :closed_at,             :date_time, read_only: true
-    field :terms_and_conditions,  :string
+    field :created_at,            :date_time, read_only: true
+    field :currency,              :string
     field :customer_notes,        :string
-    field :tax_type,              :string
-    field :tax_region,            :string
-    field :tax_rate,              :float
-    field :net_terms,             :integer
+    field :invoice_number,        :string
+    field :invoice_number_prefix, :string
     field :line_items,            Adjustment, list: true
+    field :net_terms,             :integer
+    field :po_number,             :string
+    field :state,                 :string
+    field :subtotal_in_cents,     :integer
+    field :tax_in_cents,          :integer
+    field :tax_rate,              :float
+    field :tax_region,            :string
+    field :tax_type,              :string
+    field :terms_and_conditions,  :string
+    field :total_in_cents,        :integer
     field :transactions,          Transaction, list: true
+    field :updated_at,            :date_time, read_only: true
+    field :uuid,                  :string
+    field :vat_number,            :string
   end
 
   @doc """

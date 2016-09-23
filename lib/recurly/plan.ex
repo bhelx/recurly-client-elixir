@@ -15,16 +15,16 @@ defmodule Recurly.Plan do
     field :description,                     :string
     field :name,                            :string
     field :plan_code,                       :string
-    field :plan_interval_unit,              :string
     field :plan_interval_length,            :integer
+    field :plan_interval_unit,              :string
     field :revenue_schedule_type,           :string
     field :setup_fee_accounting_code,       :string
     field :setup_fee_in_cents,              Money
     field :setup_fee_revenue_schedule_type, :string
     field :success_url,                     :string
     field :total_billing_cycles,            :string
-    field :trial_interval_unit,             :string
     field :trial_interval_length,           :integer
+    field :trial_interval_unit,             :string
     field :unit_amount_in_cents,            Money
     field :tax_code,                        :string
     field :tax_exempt,                      :boolean

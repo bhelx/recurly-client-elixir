@@ -10,22 +10,22 @@ defmodule Recurly.Money do
   schema :money do
     field :AUD, :integer
     field :BRL, :integer
-    field :GBP, :integer
     field :CAD, :integer
+    field :CHF, :integer
     field :CZK, :integer
     field :DKK, :integer
     field :EUR, :integer
+    field :GBP, :integer
     field :HUF, :integer
-    field :INR, :integer
     field :ILS, :integer
+    field :INR, :integer
     field :MXN, :integer
     field :NOK, :integer
     field :NZD, :integer
     field :PLN, :integer
-    field :SGD, :integer
     field :SEK, :integer
-    field :CHF, :integer
-    field :ZAR, :integer
+    field :SGD, :integer
     field :USD, :integer
+    field :ZAR, :integer
   end
 end

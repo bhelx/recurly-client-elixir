@@ -7,8 +7,8 @@ defmodule Recurly.Adjustment do
   use Recurly.Resource
   alias Recurly.{Resource,Adjustment}
 
-  @account_endpoint "accounts/<%= account_code %>/adjustments"
-  @find_endpoint "adjustments/<%= uuid %>"
+  @account_endpoint "/accounts/<%= account_code %>/adjustments"
+  @find_endpoint "/adjustments/<%= uuid %>"
 
   schema :adjustment do
     field :accounting_code,       :string

@@ -1,7 +1,6 @@
 defmodule Recurly.XML.SchemaTest do
   use ExUnit.Case, async: true
-  alias Recurly.XML.Schema
-  alias Recurly.XML.Field
+  alias Recurly.XML.{Schema,Field}
 
   defmodule MyResource do
     use Recurly.XML.Schema
@@ -11,6 +10,11 @@ defmodule Recurly.XML.SchemaTest do
       field :an_integer, :integer
       field :a_float, :float, read_only: true
     end
+  end
+
+  test "Schema#get returns the schema of a resource_type" do
+    schema = Schema.get(MyResource)
+    assert schema.resource_type == MyResource
   end
 
   test "creates a struct with the keys from the schema" do

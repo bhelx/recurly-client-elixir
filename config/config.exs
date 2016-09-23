@@ -2,9 +2,21 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :recurly,
-  private_key: System.get_env("RECURLY_DEV_KEY"),
-  subdomain: System.get_env("RECURLY_DEV_SUBDOMAIN")
+if Mix.env == :test do
+  # load with test keys
+  config :recurly,
+    private_key: "15f32756c9c90b83f2231e638de98bf1",
+    subdomain: "mysubdomain"
+
+  config :logger, level: :error
+else
+  # load with system env by default
+  config :recurly,
+    private_key: System.get_env("RECURLY_DEV_KEY"),
+    subdomain: System.get_env("RECURLY_DEV_SUBDOMAIN")
+
+  config :logger, level: :debug
+end
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
@@ -23,7 +35,6 @@ config :recurly,
 # Or configure a 3rd-party app:
 #
 #config :logger, level: :info
-config :logger, level: :debug
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

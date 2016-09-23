@@ -7,7 +7,7 @@ defmodule Recurly.AddOn do
   use Recurly.Resource
   alias Recurly.{Resource,AddOn,Money}
 
-  @endpoint "plans/<%= plan_code %>/add_ons"
+  @endpoint "/plans/<%= plan_code %>/add_ons"
 
   schema :add_on do
     field :accounting_code,                 :string

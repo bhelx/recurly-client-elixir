@@ -11,7 +11,10 @@ defmodule Recurly.Mixfile do
      docs: [main: "Recurly"],
      description: description,
      package: package,
-     deps: deps]
+     deps: deps,
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
+   ]
   end
 
   def application do
@@ -26,7 +29,9 @@ defmodule Recurly.Mixfile do
       {:xml_builder, "~> 0.0.8"},
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.11", only: :dev},
-      {:credo, "~> 0.4", only: [:dev, :test]}
+      {:credo, "~> 0.4", only: [:dev, :test]},
+      {:excoveralls, "~> 0.5", only: :test},
+      {:bypass, "~> 0.1", only: :test}
     ]
   end
 

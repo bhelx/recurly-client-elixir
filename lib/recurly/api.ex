@@ -121,10 +121,19 @@ defmodule Recurly.API do
   end
 
   defp api_key do
-    Application.get_env(:recurly, :private_key) || System.get_env "RECURLY_PRIVATE_KEY"
+    fetch_config!(:private_key)
   end
 
   defp api_subdomain do
-    Application.get_env(:recurly, :subdomain) || System.get_env "RECURLY_SUBDOMAIN"
+    fetch_config!(:subdomain)
+  end
+
+  defp fetch_config!(key) do
+    val = Application.fetch_env!(:recurly, key)
+    if val == nil || val == "" do
+      raise ArgumentError, message: "Must set recurly config key #{key}"
+    else
+      val
+    end
   end
 end
