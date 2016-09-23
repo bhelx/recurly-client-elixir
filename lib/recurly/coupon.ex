@@ -5,7 +5,7 @@ defmodule Recurly.Coupon do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Coupon,Money}
 
   @endpoint "/coupons"
 
@@ -16,7 +16,7 @@ defmodule Recurly.Coupon do
     field :coupon_type,                 :string
     field :description,                 :string
     field :discount_type,               :string
-    field :discount_in_cents,           Recurly.Money
+    field :discount_in_cents,           Money
     field :discount_percent,            :integer
     field :duration,                    :string
     field :invoice_description,         :string
@@ -50,7 +50,7 @@ defmodule Recurly.Coupon do
   ```
   """
   def list(options \\ []) do
-    Resource.list(%Recurly.Coupon{}, @endpoint, options)
+    Resource.list(%Coupon{}, @endpoint, options)
   end
 
   @doc """
@@ -74,7 +74,7 @@ defmodule Recurly.Coupon do
   ```
   """
   def find(coupon_code) do
-    Resource.find(%Recurly.Coupon{}, path(coupon_code))
+    Resource.find(%Coupon{}, path(coupon_code))
   end
 
   @doc """
@@ -108,7 +108,7 @@ defmodule Recurly.Coupon do
   ```
   """
   def create(changeset) do
-    Resource.create(%Recurly.Coupon{}, changeset, @endpoint)
+    Resource.create(%Coupon{}, changeset, @endpoint)
   end
 
   @doc """

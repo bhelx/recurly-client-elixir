@@ -4,6 +4,8 @@ defmodule Recurly.Page do
   data. TODO needs more docs.
   """
 
+  alias Recurly.{Resource,Page}
+
   @link_regex ~r/<([^>]+)>; rel\=\"next\.*"/
 
   defstruct [
@@ -18,7 +20,7 @@ defmodule Recurly.Page do
   Creates a new starting page
   """
   def new(resource_type, endpoint, options \\ []) do
-    %Recurly.Page{
+    %Page{
       resource_type: resource_type,
       next: endpoint,
       options: options
@@ -32,7 +34,7 @@ defmodule Recurly.Page do
     resource_type = resource.__struct__
     next = parse_next_link(headers["Link"])
     {records, _} = Integer.parse(headers["X-Records"])
-    %Recurly.Page{
+    %Page{
       resource_type: resource_type,
       resources: resources,
       next: next,
@@ -45,7 +47,7 @@ defmodule Recurly.Page do
 
   TODO needs refactoring and documentation
   """
-  def to_stream(page = %Recurly.Page{}) do
+  def to_stream(page = %Page{}) do
     Stream.resource(
       fn -> page end,
       fn page ->
@@ -55,7 +57,7 @@ defmodule Recurly.Page do
             {[resource], Map.put(page, :resources, rest)}
           _ ->
             if (resources == nil || resources == []) && page.next do
-              case Recurly.Page.get_next(page) do
+              case Page.get_next(page) do
                 {:ok, next_page} ->
                   case next_page.resources do
                     [resource | rest] ->
@@ -80,9 +82,9 @@ defmodule Recurly.Page do
   @doc """
   Fetches the next page
   """
-  def get_next(page = %Recurly.Page{}) do
+  def get_next(page = %Page{}) do
     resource = struct(page.resource_type)
-    Recurly.Resource.list(resource, page.next, [])
+    Resource.list(resource, page.next, [])
   end
 
   defp parse_next_link(link_header) do

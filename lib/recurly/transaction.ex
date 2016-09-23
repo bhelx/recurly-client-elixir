@@ -5,14 +5,14 @@ defmodule Recurly.Transaction do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Transaction,TransactionDetails}
 
   @endpoint "/transactions"
 
   schema :transaction do
     field :amount_in_cents,  :integer
     field :currency,         :string
-    field :details,          Recurly.TransactionDetails, read_only: true
+    field :details,          TransactionDetails, read_only: true
     field :ip_address,       :string
     field :payment_method,   :string
     field :recurring_type,   :boolean
@@ -47,7 +47,7 @@ defmodule Recurly.Transaction do
   ```
   """
   def find(uuid) do
-    Resource.find(%Recurly.Transaction{}, path(uuid))
+    Resource.find(%Transaction{}, path(uuid))
   end
 
   @doc """
@@ -71,7 +71,7 @@ defmodule Recurly.Transaction do
   ```
   """
   def create(changeset) do
-    Resource.create(%Recurly.Transaction{}, changeset, @endpoint)
+    Resource.create(%Transaction{}, changeset, @endpoint)
   end
 
   @doc """
@@ -100,7 +100,7 @@ defmodule Recurly.Transaction do
   end
   ```
   """
-  def update(transaction = %Recurly.Transaction{}, changeset) do
+  def update(transaction = %Transaction{}, changeset) do
     Resource.update(transaction, changeset)
   end
 

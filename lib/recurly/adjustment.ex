@@ -5,7 +5,7 @@ defmodule Recurly.Adjustment do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Adjustment}
 
   @account_endpoint "accounts/<%= account_code %>/adjustments"
   @find_endpoint "adjustments/<%= uuid %>"
@@ -44,7 +44,7 @@ defmodule Recurly.Adjustment do
   ```
   """
   def find(uuid) do
-    Resource.find(%Recurly.Adjustment{}, find_path(uuid))
+    Resource.find(%Adjustment{}, find_path(uuid))
   end
 
   @doc """
@@ -66,7 +66,7 @@ defmodule Recurly.Adjustment do
   ```
   """
   def stream(account_code, options \\ []) do
-    Recurly.Resource.stream(Recurly.Adjustment, account_path(account_code), options)
+    Resource.stream(Adjustment, account_path(account_code), options)
   end
 
   @doc """
@@ -91,7 +91,7 @@ defmodule Recurly.Adjustment do
   ```
   """
   def create(changeset, account_code) do
-    Resource.create(%Recurly.Adjustment{}, changeset, account_path(account_code))
+    Resource.create(%Adjustment{}, changeset, account_path(account_code))
   end
 
   @doc """
