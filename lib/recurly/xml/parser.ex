@@ -101,6 +101,9 @@ defimpl Recurly.XML.Parser, for: Any do
   defp to_attribute({attr_name, _xml_node, _field, %{"nil" => "nil"}}) do
     {attr_name, nil}
   end
+  defp to_attribute({attr_name, _xml_node, _field, %{"nil" => "true"}}) do
+    {attr_name, nil}
+  end
   defp to_attribute({attr_name, xml_node, field, %{"type" => "array"}}) do
     path = %SweetXpath{path: './*', is_list: true}
 
@@ -114,13 +117,16 @@ defimpl Recurly.XML.Parser, for: Any do
     {attr_name, resources}
   end
   defp to_attribute({attr_name, xml_node, %Field{type: :date_time}, _xml_attrs}) do
-    val = text_value(xml_node)
-    {attr_name, NaiveDateTime.from_iso8601!(val)}
+    case text_value(xml_node) do
+      nil -> {attr_name, nil}
+      val -> {attr_name, NaiveDateTime.from_iso8601!(val)}
+    end
   end
   defp to_attribute({attr_name, xml_node, %Field{type: :boolean}, _xml_attrs}) do
     val = text_value(xml_node) |> String.downcase
+
     case val do
-      "true" -> {attr_name, true}
+      "true"  -> {attr_name, true}
       "false" -> {attr_name, false}
       _ -> raise ArgumentError, message: "Invalid boolean value #{inspect({attr_name, val})}"
     end

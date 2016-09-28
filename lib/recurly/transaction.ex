@@ -10,6 +10,7 @@ defmodule Recurly.Transaction do
   @endpoint "/transactions"
 
   schema :transaction do
+    field :action,           :string
     field :amount_in_cents,  :integer
     field :currency,         :string
     field :details,          Recurly.TransactionDetails, read_only: true
