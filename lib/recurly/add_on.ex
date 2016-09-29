@@ -5,7 +5,7 @@ defmodule Recurly.AddOn do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,AddOn,Money}
 
   @endpoint "plans/<%= plan_code %>/add_ons"
 
@@ -20,7 +20,7 @@ defmodule Recurly.AddOn do
     field :optional,                        :boolean
     field :revenue_schedule_type,           :string
     field :tax_code,                        :string
-    field :unit_amount_in_cents,            Recurly.Money
+    field :unit_amount_in_cents,            Money
     field :usage_percentage,                :string
     field :usage_type,                      :string
   end
@@ -57,7 +57,7 @@ defmodule Recurly.AddOn do
   """
   def create(changeset) do
     plan_code = Keyword.fetch!(changeset, :plan_code)
-    Resource.create(%Recurly.AddOn{}, changeset, path(plan_code))
+    Resource.create(%AddOn{}, changeset, path(plan_code))
   end
 
   @doc """

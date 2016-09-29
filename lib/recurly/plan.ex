@@ -5,7 +5,7 @@ defmodule Recurly.Plan do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Money,Plan}
 
   @endpoint "/plans"
 
@@ -19,13 +19,13 @@ defmodule Recurly.Plan do
     field :plan_interval_length,            :integer
     field :revenue_schedule_type,           :string
     field :setup_fee_accounting_code,       :string
-    field :setup_fee_in_cents,              Recurly.Money
+    field :setup_fee_in_cents,              Money
     field :setup_fee_revenue_schedule_type, :string
     field :success_url,                     :string
     field :total_billing_cycles,            :string
     field :trial_interval_unit,             :string
     field :trial_interval_length,           :integer
-    field :unit_amount_in_cents,            Recurly.Money
+    field :unit_amount_in_cents,            Money
     field :tax_code,                        :string
     field :tax_exempt,                      :boolean
   end
@@ -51,7 +51,7 @@ defmodule Recurly.Plan do
   ```
   """
   def find(plan_code) do
-    Resource.find(%Recurly.Plan{}, path(plan_code))
+    Resource.find(%Plan{}, path(plan_code))
   end
 
   @doc """
@@ -86,7 +86,7 @@ defmodule Recurly.Plan do
   ```
   """
   def create(changeset) do
-    Resource.create(%Recurly.Plan{}, changeset, @endpoint)
+    Resource.create(%Plan{}, changeset, @endpoint)
   end
 
   @doc """

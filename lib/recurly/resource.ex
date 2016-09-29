@@ -4,8 +4,7 @@ defmodule Recurly.Resource do
   Mostly for internal use. API unstable.
   """
 
-  alias Recurly.API
-  alias Recurly.XML
+  alias Recurly.{Resource,API,XML,Page,Association}
 
   @doc false
   defmacro __using__(_) do
@@ -41,8 +40,8 @@ defmodule Recurly.Resource do
   def list(resource, path, options) do
     case API.make_request(:get, path, "", params: options) do
       {:ok, xml_string, headers} ->
-        resources = Recurly.XML.Parser.parse(resource, xml_string, true)
-        page = Recurly.Page.from_response(resource, resources, headers)
+        resources = XML.Parser.parse(resource, xml_string, true)
+        page = Page.from_response(resource, resources, headers)
         {:ok, page}
       err ->
         err
@@ -52,12 +51,12 @@ defmodule Recurly.Resource do
   @doc """
   Creates a stream from a `Recurly.Association`. See `Recurly.Resource.stream/3`.
   """
-  def stream(association = %Recurly.Association{paginate: true}, options \\ []) do
+  def stream(association = %Association{paginate: true}, options \\ []) do
     resource_type = association.resource_type
     endpoint = association.href
 
-    Recurly.Page.new(resource_type, endpoint, options)
-    |> Recurly.Page.to_stream
+    Page.new(resource_type, endpoint, options)
+    |> Page.to_stream
   end
 
   @doc """
@@ -85,11 +84,10 @@ defmodule Recurly.Resource do
   for internal use, but these examples will show Resource's stream function.
 
   ```
-  alias Recurly.Resource
-  alias Recurly.Subscription
-  alias Recurly.Account
+  alias Recurly.{Resource,Subscription,Account}
 
-  # Suppose we want the uuids of the first 70 active subscription in order of creation (newest to oldest)
+  # Suppose we want the uuids of the first 70 active subscriptions
+  # in order of creation (newest to oldest)
   options = [state: :active, order: :desc, sort: :created_at]
 
   stream = Resource.stream(Subscription, "/subscriptions", options)
@@ -213,8 +211,7 @@ defmodule Recurly.Resource do
   ## Examples
 
   ```
-  alias Recurly.Resource
-  alias Recurly.Subscription
+  alias Recurly.{Resource,Subscription}
 
   # suppose we want the latest, active subscription
   case Resource.first(%Subscription{}, "/subscriptions", state: :active) do
@@ -235,7 +232,7 @@ defmodule Recurly.Resource do
   """
   def first(resource, path, options) do
     options = Keyword.merge(options, per_page: 1)
-    case Recurly.Resource.list(resource, path, options) do
+    case Resource.list(resource, path, options) do
       {:ok, page} ->
         first_resource = page |> Map.get(:resources) |> List.first
         {:ok, first_resource}
@@ -269,12 +266,12 @@ defmodule Recurly.Resource do
   #=> crashes with argument error because paginate == true
   ```
   """
-  def find(association = %Recurly.Association{paginate: false}) do
+  def find(association = %Association{paginate: false}) do
     resource = struct(association.resource_type)
     path = association.href
     find(resource, path)
   end
-  def find(association = %Recurly.Association{paginate: true}) do
+  def find(association = %Association{paginate: true}) do
     raise ArgumentError, message: "association must be a singleton but paginate == true => #{inspect association}"
   end
 

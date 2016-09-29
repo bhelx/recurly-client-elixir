@@ -3,8 +3,9 @@ defmodule Recurly.API do
   Module for making HTTP requests to Recurly servers.
   """
   require Logger
+
   alias HTTPoison.Response
-  alias Recurly.APILogger
+  alias Recurly.{APILogger,XML,ValidationError,NotFoundError}
 
   @doc """
 
@@ -51,16 +52,16 @@ defmodule Recurly.API do
   end
   defp handle_response({:ok, %Response{status_code: 422, body: xml_string}}) do
     error =
-      %Recurly.ValidationError{}
-      |> Recurly.XML.Parser.parse(xml_string, false)
+      %ValidationError{}
+      |> XML.Parser.parse(xml_string, false)
       |> Map.put(:status_code, 422)
 
     {:error, error}
   end
   defp handle_response({:ok, %Response{status_code: 404, body: xml_string}}) do
     error =
-      %Recurly.NotFoundError{}
-      |> Recurly.XML.Parser.parse(xml_string, false)
+      %NotFoundError{}
+      |> XML.Parser.parse(xml_string, false)
       |> Map.put(:status_code, 404)
 
     {:error, error}

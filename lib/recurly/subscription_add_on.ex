@@ -5,12 +5,13 @@ defmodule Recurly.SubscriptionAddOn do
   for more details
   """
   use Recurly.Resource
+  alias Recurly.Money
 
   schema :subscription_add_on do
     field :add_on_code,           :string
     field :quantity,              :integer
     field :revenue_schedule_type, :string
-    field :unit_amount_in_cents,  Recurly.Money
+    field :unit_amount_in_cents,  Money
     field :usage_percentage,      :string
   end
 end

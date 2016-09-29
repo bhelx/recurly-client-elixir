@@ -5,15 +5,15 @@ defmodule Recurly.Account do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.Resource
+  alias Recurly.{Resource,Account,BillingInfo,Address,Transaction}
 
   @endpoint "/accounts"
 
   schema :account do
     field :accept_language, :string
     field :account_code,    :string
-    field :address,         Recurly.Address
-    field :billing_info,    Recurly.BillingInfo
+    field :address,         Address
+    field :billing_info,    BillingInfo
     field :cc_emails,       :string
     field :closed_at,       :date_time, read_only: true
     field :company_name,    :string
@@ -24,7 +24,7 @@ defmodule Recurly.Account do
     field :last_name,       :string
     field :state,           :string, read_only: true
     field :tax_exempt,      :boolean
-    field :transactions,    Recurly.Transaction, list: true
+    field :transactions,    Transaction, list: true
     field :updated_at,      :date_time, read_only: true
     field :username,        :string
     field :vat_number,      :string
@@ -51,7 +51,7 @@ defmodule Recurly.Account do
   ```
   """
   def stream(options \\ []) do
-    Recurly.Resource.stream(Recurly.Account, @endpoint, options)
+    Resource.stream(Account, @endpoint, options)
   end
 
   @doc """
@@ -84,7 +84,7 @@ defmodule Recurly.Account do
   ```
   """
   def count(options \\ []) do
-    Recurly.Resource.count(@endpoint, options)
+    Resource.count(@endpoint, options)
   end
 
   @doc """
@@ -117,7 +117,7 @@ defmodule Recurly.Account do
   ```
   """
   def first(options \\ []) do
-    Recurly.Resource.first(%Recurly.Account{}, @endpoint, options)
+    Resource.first(%Account{}, @endpoint, options)
   end
 
   @doc """
@@ -141,7 +141,7 @@ defmodule Recurly.Account do
   ```
   """
   def find(account_code) do
-    Resource.find(%Recurly.Account{}, path(account_code))
+    Resource.find(%Account{}, path(account_code))
   end
 
   @doc """
@@ -165,7 +165,7 @@ defmodule Recurly.Account do
   ```
   """
   def create(changeset) do
-    Resource.create(%Recurly.Account{}, changeset, @endpoint)
+    Resource.create(%Account{}, changeset, @endpoint)
   end
 
   @doc """
@@ -194,7 +194,7 @@ defmodule Recurly.Account do
   end
   ```
   """
-  def update(account = %Recurly.Account{}, changeset) do
+  def update(account = %Account{}, changeset) do
     Resource.update(account, changeset)
   end
 
