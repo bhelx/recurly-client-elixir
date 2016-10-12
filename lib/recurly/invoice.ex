@@ -31,7 +31,7 @@ defmodule Recurly.Invoice do
     field :total_in_cents,        :integer
     field :transactions,          Transaction, list: true
     field :updated_at,            :date_time, read_only: true
-    field :uuid,                  :string
+    field :uuid,                  :string, read_only: true
     field :vat_number,            :string
   end
 

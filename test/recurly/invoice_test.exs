@@ -48,7 +48,6 @@ defmodule Recurly.InvoiceTest do
     terms_and_conditions
     total_in_cents
     transactions
-    uuid
     vat_number
   )a
 
