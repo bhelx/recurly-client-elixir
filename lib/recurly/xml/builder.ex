@@ -79,7 +79,12 @@ defmodule Recurly.XML.Builder do
     field = Schema.find_field(schema, attr_name)
 
     unless field do
-      msg = "Invalid changeset data #{inspect({attr_name, attr_value})} for resource #{inspect(resource_type)}"
+      msg = "Unknown field {#{inspect({attr_name, attr_value})} for resource #{inspect(resource_type)}"
+      raise ArgumentError, message: msg
+    end
+
+    if Field.read_only?(field) do
+      msg = "Can't write to read only field {#{inspect({attr_name, attr_value})} for resource #{inspect(resource_type)}"
       raise ArgumentError, message: msg
     end
 

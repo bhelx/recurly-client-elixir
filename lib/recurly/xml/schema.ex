@@ -124,10 +124,8 @@ defmodule Recurly.XML.Schema do
   def fields(schema, :writeable) do
     schema
     |> Map.get(:fields, [])
-    |> Enum.map(fn field ->
-      unless Keyword.get(field.opts, :read_only) do
-        field
-      end
+    |> Enum.reject(fn field ->
+      Keyword.get(field.opts, :read_only)
     end)
   end
 

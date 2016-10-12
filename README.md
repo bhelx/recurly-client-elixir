@@ -62,5 +62,7 @@ I've encountered with the other libraries:
 ```
 mix credo # code analysis
 mix test  # run tests
+mix coveralls # run coverage and print table
+mix coveralls.html && open cover/excoveralls.html # run coverage and open html view
 ```
 

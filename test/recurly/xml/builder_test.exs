@@ -12,9 +12,9 @@ defmodule Recurly.XML.BuilderTest do
       <a_date_time type="datetime">2016-08-14T00:00:00.000000</a_date_time>
       <an_embedded_resource>
         <name>An Embedded Resource</name>
-        <a_tripple_embedded_resource>
+        <a_double_embedded_resource>
           <name>A Tripple Embedded Resource</name>
-        </a_tripple_embedded_resource>
+        </a_double_embedded_resource>
       </an_embedded_resource>
       <an_array type="array">
         <an_embedded_resource>
@@ -35,7 +35,7 @@ defmodule Recurly.XML.BuilderTest do
       a_date_time: ~N[2016-08-14T00:00:00.000000],
       an_embedded_resource: [
         name: "An Embedded Resource",
-        a_tripple_embedded_resource: [
+        a_double_embedded_resource: [
           name: "A Tripple Embedded Resource"
         ]
       ],
@@ -68,6 +68,32 @@ defmodule Recurly.XML.BuilderTest do
     ]
 
     assert canonicalize(Builder.generate(changeset, MyResource)) == xml_doc
+  end
+
+  test "throws ArgumentError if a field is not recognized" do
+    changeset = [
+      a_string: "A String",
+      an_integer: 123,
+      a_float: nil,
+      invalid_field: true
+    ]
+
+    assert_raise ArgumentError, fn ->
+      Builder.generate(changeset, MyResource)
+    end
+  end
+
+  test "throws ArgumentError field not writeable" do
+    changeset = [
+      a_string: "A String",
+      an_integer: 123,
+      a_float: nil,
+      a_read_only: "You can't write me!"
+    ]
+
+    assert_raise ArgumentError, fn ->
+      Builder.generate(changeset, MyResource)
+    end
   end
 
   # TODO could be smarter by removing only whitespace b/w elements
