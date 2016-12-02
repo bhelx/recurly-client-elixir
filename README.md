@@ -10,6 +10,41 @@ Having said that, I would love help on making it production ready.
 See [the documentation](https://hexdocs.pm/recurly/Recurly.html) to get started.
 This project uses inline documentation using [exdoc](https://github.com/elixir-lang/ex_doc).
 
+## Installation
+
+1. Add recurly to your list of dependencies in `mix.exs`:
+
+  ```elixir
+  def deps do
+    [{:recurly, "~> 0.1.4"}]
+  end
+  ```
+
+2. Ensure recurly is started before your application:
+
+  ```elixir
+  def application do
+    [applications: [:recurly]]
+  end
+  ```
+
+3. Add your `subdomain` and private key to your config file. You can use ENV vars or whatever your server uses to store configs:
+
+  ```elixir
+  config :recurly,
+    private_key: System.get_env("RECURLY_DEV_KEY"),
+    subdomain: System.get_env("RECURLY_DEV_SUBDOMAIN")
+  ```
+
+## Testing
+
+```
+mix credo # code analysis
+mix test  # run tests
+mix coveralls # run coverage and print table
+mix coveralls.html && open cover/excoveralls.html # run coverage and open html view
+```
+
 ## Design
 
 In writing this library from scratch, I'm trying to test some "lessons learned" in maintaining the official
@@ -38,31 +73,4 @@ I've encountered with the other libraries:
   - Need more examples and documentation
   - Typespecs
   - More tests
-
-## Installation
-
-1. Add recurly to your list of dependencies in `mix.exs`:
-
-  ```elixir
-    def deps do
-      [{:recurly, "~> 0.1.4"}]
-    end
-  ```
-
-2. Ensure recurly is started before your application:
-
-  ```elixir
-    def application do
-      [applications: [:recurly]]
-    end
-  ```
-
-## Testing
-
-```
-mix credo # code analysis
-mix test  # run tests
-mix coveralls # run coverage and print table
-mix coveralls.html && open cover/excoveralls.html # run coverage and open html view
-```
 
