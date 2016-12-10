@@ -5,12 +5,16 @@ defmodule Recurly.Plan do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.{Resource,Money,Plan}
+  alias Recurly.{Resource,Money,Plan,AddOn}
 
   @endpoint "/plans"
 
   schema :plan do
     field :accounting_code,                 :string
+    field :add_ons,                         AddOn, list: true
+    field :bypass_hosted_confirmation,      :boolean
+    field :cancel_url,                      :string
+    field :display_phone_number,            :string
     field :display_quantity,                :boolean
     field :description,                     :string
     field :name,                            :string

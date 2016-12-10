@@ -32,6 +32,7 @@ end
 
 defmodule Utils do
   alias Recurly.XML
+  import ExUnit.Assertions, only: [assert: 1, assert: 2]
 
   def compare_readable_fields(resource_type, fields) do
     readable =
@@ -41,7 +42,7 @@ defmodule Utils do
       |> Enum.map(fn field -> field.name end)
       |> Enum.sort
 
-    readable == Enum.sort(fields)
+    assert(readable == Enum.sort(fields))
   end
 
   def compare_writeable_fields(resource_type, fields) do
@@ -52,7 +53,7 @@ defmodule Utils do
       |> Enum.map(fn field -> field.name end)
       |> Enum.sort
 
-    writeable == Enum.sort(fields)
+    assert(writeable == Enum.sort(fields))
   end
 end
 

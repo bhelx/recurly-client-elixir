@@ -4,16 +4,20 @@ defmodule Recurly.TransactionTest do
   import Utils
 
   @readable_fields ~w(
+    account
     action
     amount_in_cents
     currency
     details
+    invoice
     ip_address
+    original_transaction
     payment_method
     recurring_type
     reference
     refundable_type
     source
+    subscription
     tax_in_cents
     test_type
     transaction_code
@@ -39,11 +43,11 @@ defmodule Recurly.TransactionTest do
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(Transaction, @writeable_fields)
+    compare_writeable_fields(Transaction, @writeable_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(Transaction, @readable_fields)
+    compare_readable_fields(Transaction, @readable_fields)
   end
 
   test "Transactions#path should resolve to the transactions endpoint" do

@@ -5,22 +5,40 @@ defmodule Recurly.Adjustment do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.{Resource,Adjustment}
+  alias Recurly.{Resource,Adjustment,Account,Invoice,Subscription}
 
   @account_endpoint "/accounts/<%= account_code %>/adjustments"
   @find_endpoint "/adjustments/<%= uuid %>"
 
   schema :adjustment do
-    field :accounting_code,       :string
-    field :currency,              :string
-    field :description,           :string
-    field :end_date,              :date_time
-    field :quantity,              :integer
-    field :revenue_schedule_type, :string
-    field :start_date,            :date_time
-    field :tax_code,              :boolean
-    field :tax_exempt,            :string
-    field :unit_amount_in_cents,  :integer
+    field :account,                   Account, read_only: true
+    field :accounting_code,           :string
+    field :created_at,                :date_time, read_only: true
+    field :currency,                  :string
+    field :description,               :string
+    field :discount_in_cents,         :integer
+    field :end_date,                  :date_time
+    field :invoice,                   Invoice, read_only: true
+    field :origin,                    :string
+    field :original_adjustment_uuid,  :string
+    field :product_code,              :string
+    field :quantity,                  :integer
+    field :quantity_remaining,        :integer
+    field :revenue_schedule_type,     :string
+    field :state,                     :string
+    field :start_date,                :date_time
+    field :subscription,              Subscription, read_only: true
+    field :tax_code,                  :string
+    field :tax_exempt,                :boolean
+    field :tax_in_cents,              :integer
+    field :tax_rate,                  :float
+    field :tax_region,                :string
+    field :tax_type,                  :string
+    field :taxable,                   :boolean
+    field :total_in_cents,            :integer
+    field :unit_amount_in_cents,      :integer
+    field :uuid,                      :string
+    field :updated_at,                :date_time, read_only: true
   end
 
   @doc """

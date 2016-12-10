@@ -5,6 +5,10 @@ defmodule Recurly.PlanTest do
 
   @all_fields ~w(
     accounting_code
+    add_ons
+    bypass_hosted_confirmation
+    cancel_url
+    display_phone_number
     display_quantity
     description
     name
@@ -25,11 +29,11 @@ defmodule Recurly.PlanTest do
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(Plan, @all_fields)
+    compare_writeable_fields(Plan, @all_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(Plan, @all_fields)
+    compare_readable_fields(Plan, @all_fields)
   end
 
   test "Plan#path should resolve to the plans endpoint" do

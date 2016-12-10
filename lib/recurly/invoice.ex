@@ -13,6 +13,7 @@ defmodule Recurly.Invoice do
     field :account,               Account
     field :address,               Address
     field :closed_at,             :date_time, read_only: true
+    field :collection_method,     :string
     field :created_at,            :date_time, read_only: true
     field :currency,              :string
     field :customer_notes,        :string

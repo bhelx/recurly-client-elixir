@@ -5,26 +5,30 @@ defmodule Recurly.Transaction do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.{Resource,Transaction,TransactionDetails}
+  alias Recurly.{Resource,Transaction,TransactionDetails,Account,Invoice,Subscription}
 
   @endpoint "/transactions"
 
   schema :transaction do
-    field :action,           :string
-    field :amount_in_cents,  :integer
-    field :currency,         :string
-    field :details,          TransactionDetails, read_only: true
-    field :ip_address,       :string
-    field :payment_method,   :string
-    field :recurring_type,   :boolean
-    field :reference,        :string
-    field :refundable_type,  :boolean
-    field :source,           :string
-    field :tax_in_cents,     :integer
-    field :test_type,        :boolean
-    field :transaction_code, :string
-    field :uuid,             :string
-    field :voidable_type,    :boolean
+    field :account,               Account, read_only: true
+    field :action,                :string
+    field :amount_in_cents,       :integer
+    field :currency,              :string
+    field :details,               TransactionDetails, read_only: true
+    field :invoice,               Invoice, read_only: true
+    field :ip_address,            :string
+    field :original_transaction,  Transaction, read_only: true
+    field :payment_method,        :string
+    field :recurring_type,        :boolean
+    field :reference,             :string
+    field :refundable_type,       :boolean
+    field :source,                :string
+    field :subscription,          Subscription, read_only: true
+    field :tax_in_cents,          :integer
+    field :test_type,             :boolean
+    field :transaction_code,      :string
+    field :uuid,                  :string
+    field :voidable_type,         :boolean
   end
 
   @doc """

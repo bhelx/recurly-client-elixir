@@ -16,6 +16,7 @@ defmodule Recurly.SubscriptionTest do
     collection_method
     customer_notes
     first_renewal_date
+    invoice
     net_terms
     plan
     plan_code
@@ -69,11 +70,11 @@ defmodule Recurly.SubscriptionTest do
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(Subscription, @writeable_fields)
+    compare_writeable_fields(Subscription, @writeable_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(Subscription, @readable_fields)
+    compare_readable_fields(Subscription, @readable_fields)
   end
 
   test "Subscription#path should resolve to the subscriptions endpoint" do

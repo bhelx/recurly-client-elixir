@@ -4,32 +4,32 @@ defmodule Recurly.MoneyTest do
   import Utils
 
   @all_fields ~w(
-    AUD
-    BRL
-    CAD
-    CHF
-    CZK
-    DKK
-    EUR
-    GBP
-    HUF
-    ILS
-    INR
-    MXN
-    NOK
-    NZD
-    PLN
-    SEK
-    SGD
-    USD
-    ZAR
+    aud
+    brl
+    cad
+    chf
+    czk
+    dkk
+    eur
+    gbp
+    huf
+    ils
+    inr
+    mxn
+    nok
+    nzd
+    pln
+    sek
+    sgd
+    usd
+    zar
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(Money, @all_fields)
+    compare_writeable_fields(Money, @all_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(Money, @all_fields)
+    compare_readable_fields(Money, @all_fields)
   end
 end

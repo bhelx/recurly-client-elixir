@@ -8,6 +8,8 @@ defmodule Recurly.CouponTest do
     applies_to_non_plan_charges
     coupon_code
     coupon_type
+    created_at
+    deleted_at
     description
     discount_type
     discount_in_cents
@@ -19,18 +21,20 @@ defmodule Recurly.CouponTest do
     name
     plan_codes
     redeem_by_date
-    temporal_unit
-    temporal_amount
     redemption_resource
+    state
+    temporal_amount
+    temporal_unit
     unique_code_template
+    updated_at
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(Coupon, @all_fields)
+    compare_writeable_fields(Coupon, @all_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(Coupon, @all_fields)
+    compare_readable_fields(Coupon, @all_fields)
   end
 
   test "Coupon#path should resolve to the coupons endpoint" do

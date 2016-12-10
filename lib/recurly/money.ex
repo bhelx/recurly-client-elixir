@@ -8,24 +8,24 @@ defmodule Recurly.Money do
   # TODO could maybe be smarter?
   # Could use a map or something
   schema :money do
-    field :AUD, :integer
-    field :BRL, :integer
-    field :CAD, :integer
-    field :CHF, :integer
-    field :CZK, :integer
-    field :DKK, :integer
-    field :EUR, :integer
-    field :GBP, :integer
-    field :HUF, :integer
-    field :ILS, :integer
-    field :INR, :integer
-    field :MXN, :integer
-    field :NOK, :integer
-    field :NZD, :integer
-    field :PLN, :integer
-    field :SEK, :integer
-    field :SGD, :integer
-    field :USD, :integer
-    field :ZAR, :integer
+    field :aud, :integer
+    field :brl, :integer
+    field :cad, :integer
+    field :chf, :integer
+    field :czk, :integer
+    field :dkk, :integer
+    field :eur, :integer
+    field :gbp, :integer
+    field :huf, :integer
+    field :ils, :integer
+    field :inr, :integer
+    field :mxn, :integer
+    field :nok, :integer
+    field :nzd, :integer
+    field :pln, :integer
+    field :sek, :integer
+    field :sgd, :integer
+    field :usd, :integer
+    field :zar, :integer
   end
 end

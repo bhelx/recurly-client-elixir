@@ -7,23 +7,24 @@ defmodule Recurly.Subscription do
   TODO implement postpone and reactivate
   """
   use Recurly.Resource
-  alias Recurly.{Resource,Subscription,Account,SubscriptionAddOn,Plan}
+  alias Recurly.{Resource,Subscription,Account,SubscriptionAddOn,Plan,Invoice}
 
   @endpoint "/subscriptions"
 
   schema :subscription do
     field :account,                    Account
     field :activated_at,               :date_time, read_only: true
+    field :bank_account_authorized_at, :string
+    field :bulk,                       :boolean
     field :canceled_at,                :date_time, read_only: true
+    field :collection_method,          :string
+    field :coupon_code,                :string
+    field :customer_notes,             :string
     field :currency,                   :string
     field :current_period_started_at,  :date_time
     field :expires_at,                 :date_time, read_only: true
-    field :bank_account_authorized_at, :string
-    field :bulk,                       :boolean
-    field :coupon_code,                :string
-    field :collection_method,          :string
-    field :customer_notes,             :string
     field :first_renewal_date,         :date_time
+    field :invoice,                    Invoice, read_only: true
     field :net_terms,                  :string
     field :plan,                       Plan
     field :plan_code,                  :string
