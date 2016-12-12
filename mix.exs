@@ -4,7 +4,7 @@ defmodule Recurly.Mixfile do
   def project do
     [app: :recurly,
      version: "0.2.0",
-     elixir: "~> 1.2",
+     elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      consolidate_protocols: Mix.env == :prod,
