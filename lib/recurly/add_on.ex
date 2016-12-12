@@ -5,7 +5,7 @@ defmodule Recurly.AddOn do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.{Resource,AddOn,Money}
+  alias Recurly.{Resource,AddOn,Money,Plan}
 
   @endpoint "/plans/<%= plan_code %>/add_ons"
 
@@ -13,14 +13,17 @@ defmodule Recurly.AddOn do
     field :accounting_code,                 :string
     field :add_on_code,                     :string
     field :add_on_type,                     :string
+    field :created_at,                      :date_time, read_only: true
     field :default_quantity,                :integer
     field :display_quantity_on_hosted_page, :boolean
     field :measured_unit_id,                :string
     field :name,                            :string
     field :optional,                        :boolean
+    field :plan,                            Plan, read_only: true
     field :revenue_schedule_type,           :string
     field :tax_code,                        :string
     field :unit_amount_in_cents,            Money
+    field :updated_at,                      :date_time, read_only: true
     field :usage_percentage,                :string
     field :usage_type,                      :string
   end
@@ -43,7 +46,7 @@ defmodule Recurly.AddOn do
     add_on_code: "ipaddresses",
     name: "Extra IP Addresses",
     unit_amount_in_cents: [
-      USD: 200
+      usd: 200
     ]
   ]
 

@@ -83,7 +83,7 @@ defimpl Recurly.XML.Parser, for: Any do
     xml_node
     |> xpath(path)
     |> Enum.map(fn xml_node ->
-      attr_name = xml_node |> xpath(~x"name(.)"s) |> String.to_atom
+      attr_name = xml_node |> xpath(~x"name(.)"s) |> String.downcase |> String.to_atom
       field = Schema.find_field(schema, attr_name)
       xml_attributes = parse_xml_attributes(xml_node)
       {attr_name, xml_node, field, xml_attributes}

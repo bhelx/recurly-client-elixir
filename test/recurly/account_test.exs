@@ -7,6 +7,7 @@ defmodule Recurly.AccountTest do
     accept_language
     account_code
     address
+    adjustments
     billing_info
     cc_emails
     closed_at
@@ -15,8 +16,11 @@ defmodule Recurly.AccountTest do
     email
     entity_use_code
     first_name
+    hosted_login_token
+    invoices
     last_name
     state
+    subscriptions
     tax_exempt
     transactions
     updated_at
@@ -36,17 +40,16 @@ defmodule Recurly.AccountTest do
     first_name
     last_name
     tax_exempt
-    transactions
     username
     vat_number
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(Account, @writeable_fields)
+    compare_writeable_fields(Account, @writeable_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(Account, @readable_fields)
+    compare_readable_fields(Account, @readable_fields)
   end
 
   test "Account#path should resolve to the accounts endpoint" do

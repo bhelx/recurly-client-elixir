@@ -5,29 +5,33 @@ defmodule Recurly.Account do
   for more details
   """
   use Recurly.Resource
-  alias Recurly.{Resource,Account,BillingInfo,Address,Transaction}
+  alias Recurly.{Resource,Account,BillingInfo,Address,Transaction,Adjustment,Invoice,Subscription}
 
   @endpoint "/accounts"
 
   schema :account do
-    field :accept_language, :string
-    field :account_code,    :string
-    field :address,         Address
-    field :billing_info,    BillingInfo
-    field :cc_emails,       :string
-    field :closed_at,       :date_time, read_only: true
-    field :company_name,    :string
-    field :created_at,      :date_time, read_only: true
-    field :email,           :string
-    field :entity_use_code, :string
-    field :first_name,      :string
-    field :last_name,       :string
-    field :state,           :string, read_only: true
-    field :tax_exempt,      :boolean
-    field :transactions,    Transaction, list: true
-    field :updated_at,      :date_time, read_only: true
-    field :username,        :string
-    field :vat_number,      :string
+    field :accept_language,     :string
+    field :account_code,        :string
+    field :address,             Address
+    field :adjustments,         Adjustment, list: true, read_only: true
+    field :billing_info,        BillingInfo
+    field :cc_emails,           :string
+    field :closed_at,           :date_time, read_only: true
+    field :company_name,        :string
+    field :created_at,          :date_time, read_only: true
+    field :email,               :string
+    field :entity_use_code,     :string
+    field :first_name,          :string
+    field :hosted_login_token,  :string, read_only: true
+    field :invoices,            Invoice, list: true, read_only: true
+    field :last_name,           :string
+    field :state,               :string, read_only: true
+    field :subscriptions,       Subscription, list: true, read_only: true
+    field :tax_exempt,          :boolean
+    field :transactions,        Transaction, list: true, read_only: true
+    field :updated_at,          :date_time, read_only: true
+    field :username,            :string
+    field :vat_number,          :string
   end
 
   @doc """

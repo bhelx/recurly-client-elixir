@@ -14,6 +14,8 @@ defmodule Recurly.Coupon do
     field :applies_to_non_plan_charges, :boolean
     field :coupon_code,                 :string
     field :coupon_type,                 :string
+    field :created_at,                  :date_time, read_only: true
+    field :deleted_at,                  :date_time, read_only: true
     field :description,                 :string
     field :discount_type,               :string
     field :discount_in_cents,           Money
@@ -24,11 +26,13 @@ defmodule Recurly.Coupon do
     field :max_redemptions_per_account, :integer
     field :name,                        :string
     field :plan_codes,                  list: true
-    field :redeem_by_date,              :string
-    field :temporal_unit,               :string
-    field :temporal_amount,             :integer
+    field :redeem_by_date,              :date_time
     field :redemption_resource,         :string
+    field :state,                       :string
+    field :temporal_amount,             :integer
+    field :temporal_unit,               :string
     field :unique_code_template,        :string
+    field :updated_at,                  :date_time, read_only: true
   end
 
   @doc """

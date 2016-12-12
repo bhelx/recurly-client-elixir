@@ -8,10 +8,10 @@ defmodule Recurly.TransactionDetailsTest do
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(TransactionDetails, @all_fields)
+    compare_writeable_fields(TransactionDetails, @all_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(TransactionDetails, @all_fields)
+    compare_readable_fields(TransactionDetails, @all_fields)
   end
 end

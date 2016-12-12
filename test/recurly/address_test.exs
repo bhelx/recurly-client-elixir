@@ -14,10 +14,10 @@ defmodule Recurly.AddressTest do
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(Address, @all_fields)
+    compare_writeable_fields(Address, @all_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(Address, @all_fields)
+    compare_readable_fields(Address, @all_fields)
   end
 end

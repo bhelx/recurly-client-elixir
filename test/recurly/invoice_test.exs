@@ -7,6 +7,7 @@ defmodule Recurly.InvoiceTest do
     account
     address
     closed_at
+    collection_method
     created_at
     currency
     customer_notes
@@ -32,6 +33,7 @@ defmodule Recurly.InvoiceTest do
   @writeable_fields ~w(
     account
     address
+    collection_method
     currency
     customer_notes
     invoice_number
@@ -52,11 +54,11 @@ defmodule Recurly.InvoiceTest do
   )a
 
   test "should maintain the list of writeable fields" do
-    assert compare_writeable_fields(Invoice, @writeable_fields)
+    compare_writeable_fields(Invoice, @writeable_fields)
   end
 
   test "should maintain the list of readable fields" do
-    assert compare_readable_fields(Invoice, @readable_fields)
+    compare_readable_fields(Invoice, @readable_fields)
   end
 
   test "Invoice#path should resolve to the invoices endpoint" do
