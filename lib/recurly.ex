@@ -320,5 +320,5 @@ defmodule Recurly do
   end
 
   @doc false
-  def user_agent, do: "Recurly/Elixir/#{client_version}"
+  def user_agent, do: "Recurly/Elixir/#{client_version()}"
 end

@@ -83,7 +83,7 @@ defmodule Recurly.API do
     defaults = [
       recv_timeout: 15_000,
       timeout: 15_000,
-      hackney: [basic_auth: {api_key, ""}]
+      hackney: [basic_auth: {api_key(), ""}]
     ]
 
     Keyword.merge(defaults, extras)
@@ -100,7 +100,7 @@ defmodule Recurly.API do
     case URI.parse(path) do
       %{scheme: "https"} -> path
       %{scheme: "http"} -> path
-       _ -> Path.join("https://#{api_subdomain}.recurly.com/v2", path)
+       _ -> Path.join("https://#{api_subdomain()}.recurly.com/v2", path)
     end
   end
 
