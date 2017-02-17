@@ -9,9 +9,9 @@ defmodule Recurly.Mixfile do
      start_permanent: Mix.env == :prod,
      consolidate_protocols: Mix.env == :prod,
      docs: [main: "Recurly"],
-     description: description,
-     package: package,
-     deps: deps,
+     description: description(),
+     package: package(),
+     deps: deps(),
      test_coverage: [tool: ExCoveralls],
      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
    ]
