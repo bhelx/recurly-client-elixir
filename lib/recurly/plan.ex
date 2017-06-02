@@ -35,6 +35,30 @@ defmodule Recurly.Plan do
   end
 
   @doc """
+  Creates a stream of plans given some options.
+
+  ## Parameters
+
+  - `options` Keyword list of the request options. See options in the
+      [plan list section](https://dev.recurly.com/docs/list-plans)
+      of the docs.
+
+  ## Examples
+
+  See `Recurly.Resource.stream/3` for more detailed examples of
+  working with resource streams.
+
+  ```
+  # stream of plans sorted from most recently
+  # updated to least recently updated
+  stream = Recurly.Plan.stream(sort: :updated_at)
+  ```
+  """
+  def stream(options \\ []) do
+    Resource.stream(Plan, @endpoint, options)
+  end
+
+  @doc """
   Finds a plan given a plan code. Returns the plan or an error.
 
   ## Parameters

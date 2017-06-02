@@ -36,6 +36,30 @@ defmodule Recurly.Coupon do
   end
 
   @doc """
+  Creates a stream of coupons given some options.
+
+  ## Parameters
+
+  - `options` Keyword list of the request options. See options in the
+      [coupon list section](https://dev.recurly.com/docs/list-active-coupons)
+      of the docs.
+
+  ## Examples
+
+  See `Recurly.Resource.stream/3` for more detailed examples of
+  working with resource streams.
+
+  ```
+  # stream of active coupons sorted from most recently
+  # updated to least recently updated
+  stream = Recurly.Coupon.stream(state: :active, sort: :updated_at)
+  ```
+  """
+  def stream(options \\ []) do
+    Resource.stream(Coupon, @endpoint, options)
+  end
+
+  @doc """
   Lists all the coupons. See [the couopons dev docs](https://dev.recurly.com/docs/list-active-coupons) for more details.
 
   ## Parameters
