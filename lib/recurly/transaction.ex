@@ -32,6 +32,30 @@ defmodule Recurly.Transaction do
   end
 
   @doc """
+  Creates a stream of transactions given some options.
+
+  ## Parameters
+
+  - `options` Keyword list of the request options. See options in the
+      [transaction list section](https://dev.recurly.com/docs/list-transactions)
+      of the docs.
+
+  ## Examples
+
+  See `Recurly.Resource.stream/3` for more detailed examples of
+  working with resource streams.
+
+  ```
+  # stream of successful transactions sorted from most recently
+  # created to least recently created
+  stream = Recurly.Transaction.stream(state: :successful, sort: :created_at)
+  ```
+  """
+  def stream(options \\ []) do
+    Resource.stream(Transaction, @endpoint, options)
+  end
+
+  @doc """
   Finds an transaction given a transaction uuid. Returns the transaction or an error.
 
   ## Parameters
