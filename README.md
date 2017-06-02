@@ -16,7 +16,7 @@ This project uses inline documentation using [exdoc](https://github.com/elixir-l
 
   ```elixir
   def deps do
-    [{:recurly, "~> 0.2.0"}]
+    [{:recurly, "~> 0.2.2"}]
   end
   ```
 
