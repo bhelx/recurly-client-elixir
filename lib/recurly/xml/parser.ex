@@ -31,7 +31,7 @@ defimpl Recurly.XML.Parser, for: Any do
 
   def parse(resource, xml_doc, true) do
     type = resource.__struct__
-    path = to_char_list("//#{type.__resource_name__}")
+    path = to_charlist("//#{type.__resource_name__}")
     path = %SweetXpath{path: path, is_list: true}
 
     xml_doc
@@ -50,7 +50,7 @@ defimpl Recurly.XML.Parser, for: Any do
   end
 
   defp insert_actions(resource_struct, xml_doc, string_path) do
-    path = %SweetXpath{path: to_char_list(string_path <> "a"), is_list: true}
+    path = %SweetXpath{path: to_charlist(string_path <> "a"), is_list: true}
     meta = resource_struct.__meta__
 
     actions =
@@ -78,7 +78,7 @@ defimpl Recurly.XML.Parser, for: Any do
   defp to_struct(xml_node, type, string_path) do
     schema = Schema.get(type)
     href_attr = parse_xml_attribute(xml_node, string_path, "href")
-    path = %SweetXpath{path: to_char_list(string_path <> "*"), is_list: true}
+    path = %SweetXpath{path: to_charlist(string_path <> "*"), is_list: true}
 
     xml_node
     |> xpath(path)
@@ -179,7 +179,7 @@ defimpl Recurly.XML.Parser, for: Any do
 
   # parses a single xml attribute given a key
   defp parse_xml_attribute(xml_node, path, attribute_key) do
-    text_value(xml_node, to_char_list("#{path}@#{attribute_key}"))
+    text_value(xml_node, to_charlist("#{path}@#{attribute_key}"))
   end
 
   # Parses the text value of the xml node, optional path
